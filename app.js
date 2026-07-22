@@ -226,9 +226,14 @@
           return Swal.fire("Login Gagal", "Username atau password salah", "error");
         }
         
-        sessionStorage.setItem("admin_logged_in", "true"); // Simpan Memori
+        sessionStorage.setItem("admin_logged_in", "true");
+        sessionStorage.setItem("admin_token", result.token);
+        sessionStorage.setItem("admin_token_expires", result.expiresAt);
         switchPage('adminPage');
         loadDashboard();
+        
+        // Jalankan validateSetup selepas login untuk diagnostic
+        validateSetupSilent();
         
       } catch (error) { 
         Swal.close();
@@ -237,27 +242,39 @@
       }
     }
 
-    // ================= LOAD DASHBOARD SYSTEM =================
+    // ================= LOAD DASHBOARD SYSTEM (V1: error handling) =================
     async function loadDashboard() {
       try {
         const response = await fetch(`${API_URL}?action=dashboard`);
         const data = await response.json();
 
-        window.lastFetchedList = data.list; 
-        window.lastFetchedSettings = data.settings; 
+        // Check for backend error response
+        if (!data.success) {
+          console.error("[dashboard] Backend error:", data.message || data);
+          document.getElementById("totalPeserta").innerText = "ERR";
+          document.getElementById("hadirCount").innerText = "ERR";
+          document.getElementById("tidakHadirCount").innerText = "ERR";
+          return;
+        }
 
-        document.getElementById("totalPeserta").innerText = data.total;
-        document.getElementById("hadirCount").innerText = data.hadir;
-        document.getElementById("tidakHadirCount").innerText = data.tidakHadir;
+        window.lastFetchedList = data.list || []; 
+        window.lastFetchedSettings = data.settings || {}; 
+
+        document.getElementById("totalPeserta").innerText = data.total ?? 0;
+        document.getElementById("hadirCount").innerText = data.hadir ?? 0;
+        document.getElementById("tidakHadirCount").innerText = data.tidakHadir ?? 0;
 
         if (data.settings) {
           if (data.settings.EVENT_DATE) document.getElementById("eventDate").value = data.settings.EVENT_DATE;
-          if (data.settings.EVENT_TIME) document.getElementById("eventTime").value = data.settings.EVENT_TIME;
+          // V1: EVENT_START_TIME or EVENT_TIME
+          const evtTime = data.settings.EVENT_START_TIME || data.settings.EVENT_TIME;
+          if (evtTime) document.getElementById("eventTime").value = evtTime;
           if (data.settings.OPEN_BEFORE_HOURS) document.getElementById("openBeforeHours").value = data.settings.OPEN_BEFORE_HOURS;
         }
 
         // 1. MAIN TABLE RENDER
         let html = "";
+        if (data.list && data.list.length > 0) {
         data.list.forEach(item => {
           const statusBadge = item.status === "HADIR" 
             ? '<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">HADIR</span>' 
@@ -317,6 +334,9 @@
               <td class="p-4 text-center">${actionBtn}</td>
             </tr>`;
         });
+        } else {
+          html = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Tiada data peserta. Sila sahkan Sheet dan validateSetup.</td></tr>`;
+        }
         document.getElementById("adminTable").innerHTML = html;
 
         // 2. WISHLIST TABLE RENDER
@@ -352,10 +372,12 @@
 
       Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       try {
+        const token = sessionStorage.getItem("admin_token");
         const response = await fetch(API_URL, {
-          method: "POST", body: JSON.stringify({ action: "updateWAStatus", data: { pgcode, phone, newStatus } })
+          method: "POST", body: JSON.stringify({ action: "updateWAStatus", token: token, data: { pgcode, phone, newStatus } })
         });
         const result = await response.json();
+        if (result.code === "AUTH_REQUIRED") { logoutAdmin(); return; }
         if (result.success) { Swal.fire("Berjaya", "Status dikemaskini.", "success"); loadDashboard(); } 
         else { Swal.fire("Gagal", result.message, "error"); selectEl.value = oldStatus; }
       } catch (error) { Swal.fire("Error", error.message, "error"); selectEl.value = oldStatus; }
@@ -378,10 +400,12 @@
       selected.forEach(box => { listToUpdate.push({ phone: box.value, pgcode: box.getAttribute("data-pgcode") }); });
 
       try {
+        const token = sessionStorage.getItem("admin_token");
         const response = await fetch(API_URL, {
-          method: "POST", body: JSON.stringify({ action: "updateWAStatus", data: { isBulk: true, newStatus: newStatus, list: listToUpdate } })
+          method: "POST", body: JSON.stringify({ action: "updateWAStatus", token: token, data: { isBulk: true, newStatus: newStatus, list: listToUpdate } })
         });
         const result = await response.json(); Swal.close();
+        if (result.code === "AUTH_REQUIRED") { logoutAdmin(); return; }
         if (result.success) {
           await Swal.fire("Berjaya", result.message, "success");
           document.getElementById("bulkStatusSelect").value = "";
@@ -415,8 +439,9 @@
       if (formValues) {
         Swal.fire({ title: 'Menyimpan Gantian...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         try {
+          const token = sessionStorage.getItem("admin_token");
           const res = await fetch(API_URL, {
-            method: 'POST', body: JSON.stringify({ action: 'replaceParticipant', data: { oldPgcode, oldPhone, newNama: formValues.nama, newPhone: formValues.phone, newEmail: formValues.email, newPgcode: formValues.pgcode } })
+            method: 'POST', body: JSON.stringify({ action: 'replaceParticipant', token: token, data: { oldPgcode, oldPhone, newNama: formValues.nama, newPhone: formValues.phone, newEmail: formValues.email, newPgcode: formValues.pgcode } })
           });
           const data = await res.json();
           if (data.success) { Swal.fire('Berjaya', 'Peserta diganti!', 'success'); loadDashboard(); } else { Swal.fire('Gagal', data.message, 'error'); }
@@ -458,7 +483,8 @@
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
 
         try {
-          await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateWAStatus", data: { pgcode, phone: rawPhone, newStatus: "SUDAH" } }) });
+          const token = sessionStorage.getItem("admin_token");
+          await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateWAStatus", token: token, data: { pgcode, phone: rawPhone, newStatus: "SUDAH" } }) });
         } catch (err) {}
 
         if (i < selected.length - 1) {
@@ -469,17 +495,32 @@
       document.getElementById("selectAllWA").checked = false; toggleAllWA(); loadDashboard();
     }
 
-    // ================= SETTINGS ENGINE =================
+    // ================= SETTINGS ENGINE (V1: token + settings format) =================
     async function saveSettings() {
       const eventDate = document.getElementById("eventDate").value;
       const eventTime = document.getElementById("eventTime").value;
       const openBeforeHours = document.getElementById("openBeforeHours").value;
+      const token = sessionStorage.getItem("admin_token");
+      if (!token) { Swal.fire("Sesi Tamat", "Sila login semula.", "warning"); logoutAdmin(); return; }
+
       Swal.fire({ title: 'Save Settings...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       try {
-        const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveSettings", eventDate, eventTime, openBeforeHours }) });
+        const response = await fetch(API_URL, { 
+          method: "POST", 
+          body: JSON.stringify({ 
+            action: "saveSettings", 
+            token: token,
+            settings: {
+              EVENT_DATE: eventDate,
+              EVENT_START_TIME: eventTime,
+              OPEN_BEFORE_HOURS: openBeforeHours
+            }
+          }) 
+        });
         const result = await response.json(); Swal.close();
-        if (!result.success) return Swal.fire("Error", "Gagal save settings", "error");
-        Swal.fire("Berjaya", "Settings disimpan", "success");
+        if (result.code === "AUTH_REQUIRED") { logoutAdmin(); return; }
+        if (!result.success) return Swal.fire("Error", result.message || "Gagal save settings", "error");
+        Swal.fire("Berjaya", result.message || "Settings disimpan", "success");
       } catch (error) { Swal.fire("Error", error.message, "error"); }
     }
 
@@ -492,7 +533,16 @@
       });
     }
 
-    function logoutAdmin() { sessionStorage.removeItem("admin_logged_in"); location.reload(); }
+    async function logoutAdmin() { 
+      const token = sessionStorage.getItem("admin_token");
+      if (token) {
+        try { await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "adminLogout", token: token }) }); } catch(e) {}
+      }
+      sessionStorage.removeItem("admin_logged_in");
+      sessionStorage.removeItem("admin_token");
+      sessionStorage.removeItem("admin_token_expires");
+      location.reload(); 
+    }
 
    // ================= COUNTDOWN TIMER ENGINE =================
     let countdownInterval;
@@ -556,7 +606,26 @@
       }, 1000);
     }
 
-    // ================= KEKALKAN LOGIN & LOAD PUBLIC DATA =================
+    // ================= KEKALKAN LOGIN & LOAD PUBLIC DATA (V1: token check) =================
+    async function validateSetupSilent() {
+      const token = sessionStorage.getItem("admin_token");
+      if (!token) return;
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "validateSetup", token: token })
+        });
+        const data = await response.json();
+        console.log("[validateSetup]", data);
+        if (data.errors && data.errors.length > 0) {
+          console.warn("[validateSetup] ERRORS:", data.errors);
+        }
+        if (data.warnings && data.warnings.length > 0) {
+          console.warn("[validateSetup] WARNINGS:", data.warnings);
+        }
+      } catch(e) { console.error("[validateSetup] failed:", e.message); }
+    }
+
     window.onload = function() {
       // 0. Setkan auto-tahun pada footer
       const yearEl = document.getElementById('currentYear');
@@ -565,10 +634,18 @@
       // 1. Sentiasa jalankan enjin timer untuk paparan depan
       initPublicPage();
 
-      // 2. Semak memori login admin
-      if (sessionStorage.getItem("admin_logged_in") === "true") {
+      // 2. Semak memori login admin (V1: check token + expiry)
+      const token = sessionStorage.getItem("admin_token");
+      const expires = sessionStorage.getItem("admin_token_expires");
+      const now = Math.floor(Date.now() / 1000);
+      if (token && expires && now < Number(expires)) {
         switchPage('adminPage');
         loadDashboard();
+      } else if (token) {
+        // Token expired — clear session
+        sessionStorage.removeItem("admin_token");
+        sessionStorage.removeItem("admin_token_expires");
+        sessionStorage.removeItem("admin_logged_in");
       }
     };
     
@@ -676,9 +753,10 @@
 
       Swal.fire({ title: 'Mengemaskini Rekod...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
       try {
+        const token = sessionStorage.getItem("admin_token");
         const response = await fetch(API_URL, {
           method: "POST",
-          body: JSON.stringify({ action: "handleApproval", data: { pgcode, phone, status } })
+          body: JSON.stringify({ action: "handleApproval", token: token, data: { pgcode, phone, status } })
         });
         const result = await response.json(); 
         Swal.close();
