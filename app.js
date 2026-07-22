@@ -1,3 +1,5 @@
+    // TEST GAS: Tukar URL ini ke TEST deployment untuk ujian
+    // PRODUCTION: Kekalkan URL ini untuk live
     const API_URL = "https://script.google.com/macros/s/AKfycbwRwpHooRwpIMHfvt9hulRJh8ga4c-x7WnYWR2bxFB4AeFm0Sw9FASE0i9d8FerDWSZ/exec"; 
 
     function switchPage(pageId) {
@@ -192,7 +194,32 @@
           body: JSON.stringify({ action: "adminLogin", username: username, password: password }) 
         });
         
-        const result = await response.json(); 
+        // --- TEMP: Response diagnostics (remove after TEST GAS verified) ---
+        console.log("[TEMP] adminLogin response status:", response.status);
+        console.log("[TEMP] adminLogin response url:", response.url);
+        const contentType = response.headers.get("content-type");
+        console.log("[TEMP] adminLogin content-type:", contentType);
+        
+        const rawText = await response.text();
+        console.log("[TEMP] adminLogin raw (first 200 chars):", rawText.substring(0, 200));
+        
+        if (!contentType || !contentType.includes("application/json")) {
+          Swal.close();
+          console.error("[TEMP] Non-JSON response:", rawText.substring(0, 500));
+          return Swal.fire(
+            "TEST GAS Deployment Error",
+            "Server returned " + contentType + " instead of JSON.\n\nStatus: " + response.status + "\nURL: " + response.url + "\n\nPastikan:\n1. GAS URL guna /exec (bukan /dev atau editor)\n2. Deployment: Execute as Me, Access Anyone\n3. code.test.gs disalin sepenuhnya",
+            "error"
+          );
+        }
+        
+        let result;
+        try { result = JSON.parse(rawText); } catch(e) {
+          Swal.close();
+          return Swal.fire("JSON Parse Error", "Gagal membaca response JSON.\n\n" + e.message + "\n\nRaw: " + rawText.substring(0, 200), "error");
+        }
+        // --- END TEMP diagnostics ---
+        
         Swal.close();
 
         if (!result.success) {
