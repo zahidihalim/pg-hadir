@@ -1,6 +1,6 @@
-    // TEST GAS: Tukar URL ini ke TEST deployment untuk ujian
-    // PRODUCTION: Kekalkan URL ini untuk live
-    const API_URL = "https://script.google.com/macros/s/AKfycbwRwpHooRwpIMHfvt9hulRJh8ga4c-x7WnYWR2bxFB4AeFm0Sw9FASE0i9d8FerDWSZ/exec"; 
+    // TEST GAS URL (tukar balik ke production selepas ujian)
+    const API_URL = "https://script.google.com/macros/s/AKfycbynTH21RMJr1snG0guq_AWmmJCtt5Zitncm18vbIc5vIBmeoWy0IEgkhOI-AJ0md2AqYw/exec";
+    // PRODUCTION: https://script.google.com/macros/s/AKfycbw...DWSZ/exec 
 
     function switchPage(pageId) {
       document.querySelectorAll('.page-section').forEach(page => page.classList.add('hidden'));
