@@ -264,12 +264,14 @@
         document.getElementById("hadirCount").innerText = data.hadir ?? 0;
         document.getElementById("tidakHadirCount").innerText = data.tidakHadir ?? 0;
 
+        // Populate SuperAdmin settings fields + dynamic public page
         if (data.settings) {
-          if (data.settings.EVENT_DATE) document.getElementById("eventDate").value = data.settings.EVENT_DATE;
-          // V1: EVENT_START_TIME or EVENT_TIME
+          populateAllSettings(data.settings);
+          // Also populate old dashboard fields if they exist
+          if (data.settings.EVENT_DATE) { const el = document.getElementById('eventDate'); if (el) el.value = data.settings.EVENT_DATE; }
           const evtTime = data.settings.EVENT_START_TIME || data.settings.EVENT_TIME;
-          if (evtTime) document.getElementById("eventTime").value = evtTime;
-          if (data.settings.OPEN_BEFORE_HOURS) document.getElementById("openBeforeHours").value = data.settings.OPEN_BEFORE_HOURS;
+          if (evtTime) { const el = document.getElementById('eventTime'); if (el) el.value = evtTime; }
+          if (data.settings.OPEN_BEFORE_HOURS) { const el = document.getElementById('openBeforeHours'); if (el) el.value = data.settings.OPEN_BEFORE_HOURS; }
         }
 
         // 1. MAIN TABLE RENDER
@@ -608,22 +610,278 @@
 
     // ================= KEKALKAN LOGIN & LOAD PUBLIC DATA (V1: token check) =================
     async function validateSetupSilent() {
+      const panel = document.getElementById("sysValidationPanel");
+      const badge = document.getElementById("sysValBadge");
+      const sheetsDiv = document.getElementById("sysValSheets");
+      const colsDiv = document.getElementById("sysValColumns");
+      const errDiv = document.getElementById("sysValErrors");
+      if (!panel) return;
+      
+      panel.classList.remove("hidden");
+      badge.textContent = "Checking...";
+      badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700";
+      
       const token = sessionStorage.getItem("admin_token");
-      if (!token) return;
+      if (!token) { badge.textContent = "No token"; badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700"; return; }
+      
       try {
         const response = await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify({ action: "validateSetup", token: token })
         });
         const data = await response.json();
-        console.log("[validateSetup]", data);
-        if (data.errors && data.errors.length > 0) {
-          console.warn("[validateSetup] ERRORS:", data.errors);
+        
+        if (data.success) {
+          badge.textContent = "✓ OK";
+          badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700";
+        } else {
+          badge.textContent = "✗ FAILED";
+          badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
         }
-        if (data.warnings && data.warnings.length > 0) {
-          console.warn("[validateSetup] WARNINGS:", data.warnings);
+        
+        // Render sheets
+        if (data.sheets) {
+          sheetsDiv.innerHTML = Object.entries(data.sheets).map(([name, ok]) =>
+            `<div class="flex items-center gap-2 bg-slate-50 rounded-lg p-2"><span>${ok ? '✅' : '❌'}</span><span class="font-mono">${name}</span></div>`
+          ).join('');
         }
-      } catch(e) { console.error("[validateSetup] failed:", e.message); }
+        
+        // Render columns
+        if (data.columns) {
+          colsDiv.innerHTML = "Headers: " + Object.entries(data.columns).map(([k, v]) => 
+            `<span class="bg-slate-100 px-2 py-0.5 rounded font-mono">${k}=col${v}</span>`
+          ).join(' ');
+        }
+        
+        // Render errors/warnings
+        let msgs = [];
+        if (data.errors && data.errors.length > 0) msgs = msgs.concat(data.errors.map(e => '❌ ' + e));
+        if (data.warnings && data.warnings.length > 0) msgs = msgs.concat(data.warnings.map(w => '⚠️ ' + w));
+        errDiv.innerHTML = msgs.join('<br>');
+        
+      } catch(e) {
+        badge.textContent = "Error";
+        badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700";
+        errDiv.textContent = e.message;
+      }
+    }
+
+    // ================= SUPERADMIN SETTINGS ENGINE =================
+    function switchSettingsTab(tabId) {
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.settings-tab').forEach(t => { t.classList.remove('bg-slate-900','text-white'); t.classList.add('text-slate-500'); });
+      const panel = document.getElementById('tab-' + tabId);
+      if (panel) panel.classList.remove('hidden');
+      const btn = document.getElementById('stab-' + tabId);
+      if (btn) { btn.classList.add('bg-slate-900','text-white'); btn.classList.remove('text-slate-500'); }
+    }
+
+    // Benefits CRUD
+    let benefitsData = [];
+    function renderBenefits() {
+      const list = document.getElementById('benefits-list');
+      if (!list) return;
+      list.innerHTML = benefitsData.map((b, i) => `
+        <div class="flex items-center gap-2 bg-slate-50 rounded-lg p-2 text-sm">
+          <span class="w-8 text-center">${b.icon || '✅'}</span>
+          <span class="flex-1">${b.text}</span>
+          <button onclick="benefitsData.splice(${i},1);renderBenefits()" class="text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+        </div>`).join('');
+    }
+    function addBenefit() {
+      const text = document.getElementById('benefit-text').value.trim();
+      if (!text) return;
+      benefitsData.push({ text, icon: document.getElementById('benefit-icon').value || '✅', order: benefitsData.length + 1 });
+      document.getElementById('benefit-text').value = '';
+      renderBenefits();
+    }
+
+    // Schedule CRUD
+    let scheduleData = [];
+    function renderSchedule() {
+      const list = document.getElementById('schedule-list');
+      if (!list) return;
+      list.innerHTML = scheduleData.map((s, i) => `
+        <div class="flex items-center gap-2 bg-slate-50 rounded-lg p-2 text-sm">
+          <span class="font-mono font-bold w-16">${s.time}</span>
+          <span class="font-medium flex-1">${s.title}</span>
+          <span class="text-slate-400 text-xs hidden md:inline w-32 truncate">${s.description || ''}</span>
+          <button onclick="scheduleData.splice(${i},1);renderSchedule()" class="text-red-500 hover:text-red-700 text-xs font-bold">✕</button>
+        </div>`).join('');
+    }
+    function addScheduleItem() {
+      const time = document.getElementById('sched-time').value;
+      const title = document.getElementById('sched-title').value.trim();
+      if (!time || !title) return;
+      scheduleData.push({ time, title, description: document.getElementById('sched-desc').value.trim(), order: scheduleData.length + 1 });
+      document.getElementById('sched-time').value = '';
+      document.getElementById('sched-title').value = '';
+      document.getElementById('sched-desc').value = '';
+      renderSchedule();
+    }
+
+    // Get all settings field values
+    function collectAllSettings() {
+      const prefix = 's-';
+      const boolFields = ['SYSTEM_ENABLED','WISHLIST_ENABLED','REPLACEMENT_ENABLED'];
+      const settings = {};
+      
+      // Collect all input/textarea fields with id="s-KEY"
+      document.querySelectorAll('[id^="' + prefix + '"]').forEach(el => {
+        const key = el.id.substring(prefix.length);
+        if (boolFields.includes(key)) {
+          settings[key] = el.checked ? 'true' : 'false';
+        } else {
+          settings[key] = el.value;
+        }
+      });
+      
+      // Add JSON fields
+      settings.BENEFITS_JSON = JSON.stringify(benefitsData);
+      settings.SCHEDULE_JSON = JSON.stringify(scheduleData);
+      
+      // Map legacy eventDate/eventTime for backward compat
+      if (!settings.EVENT_DATE && document.getElementById('eventDate')) settings.EVENT_DATE = document.getElementById('eventDate').value;
+      if (!settings.EVENT_START_TIME && document.getElementById('eventTime')) settings.EVENT_START_TIME = document.getElementById('eventTime').value;
+      
+      return settings;
+    }
+
+    // Populate all fields from config
+    function populateAllSettings(settings) {
+      if (!settings) return;
+      const prefix = 's-';
+      const boolFields = ['SYSTEM_ENABLED','WISHLIST_ENABLED','REPLACEMENT_ENABLED'];
+      
+      Object.entries(settings).forEach(([key, value]) => {
+        if (key === 'BENEFITS_JSON' && value) {
+          try { benefitsData = JSON.parse(value); renderBenefits(); } catch(e) {}
+          return;
+        }
+        if (key === 'SCHEDULE_JSON' && value) {
+          try { scheduleData = JSON.parse(value); renderSchedule(); } catch(e) {}
+          return;
+        }
+        // Legacy fields — populate old inputs too
+        if (key === 'EVENT_DATE') { const el = document.getElementById('eventDate'); if (el) el.value = value; }
+        if (key === 'EVENT_START_TIME' || key === 'EVENT_TIME') {
+          const el = document.getElementById('eventTime'); if (el) el.value = value;
+        }
+        
+        const el = document.getElementById(prefix + key);
+        if (!el) return;
+        if (boolFields.includes(key)) {
+          el.checked = (value === 'true' || value === true);
+        } else {
+          el.value = value || '';
+        }
+      });
+      
+      // Also populate dynamic public page
+      applyPublicSettings(settings);
+    }
+
+    // Load settings from getConfig
+    async function loadAllSettings() {
+      showSettingsStatus('Loading...', 'text-yellow-600');
+      try {
+        const response = await fetch(API_URL + '?action=getConfig');
+        const data = await response.json();
+        if (data.success && data.settings) {
+          populateAllSettings(data.settings);
+          showSettingsStatus('Settings loaded', 'text-green-600');
+        } else {
+          showSettingsStatus('Failed to load settings: ' + (data.message || 'unknown'), 'text-red-600');
+        }
+      } catch(e) {
+        showSettingsStatus('Error: ' + e.message, 'text-red-600');
+      }
+    }
+
+    // Save all settings
+    async function saveAllSettings() {
+      const token = sessionStorage.getItem("admin_token");
+      if (!token) { Swal.fire("Sesi Tamat","Sila login semula.","warning"); logoutAdmin(); return; }
+      
+      const settings = collectAllSettings();
+      showSettingsStatus('Saving...', 'text-yellow-600');
+      
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "saveSettings", token: token, settings: settings })
+        });
+        const result = await response.json();
+        
+        if (result.code === "AUTH_REQUIRED") { logoutAdmin(); return; }
+        
+        if (result.success) {
+          let msg = result.message || 'Settings saved';
+          if (result.rejected && result.rejected.length > 0) {
+            msg += ' (' + result.rejected.length + ' field(s) rejected: ' + result.rejected.map(r => r.key).join(', ') + ')';
+            showSettingsStatus(msg, 'text-yellow-600');
+          } else {
+            showSettingsStatus(msg, 'text-green-600');
+          }
+          // Refresh public page
+          loadAllSettings();
+        } else {
+          showSettingsStatus('Error: ' + (result.message || 'Save failed'), 'text-red-600');
+        }
+      } catch(e) {
+        showSettingsStatus('Error: ' + e.message, 'text-red-600');
+      }
+    }
+
+    function showSettingsStatus(msg, cls) {
+      const el = document.getElementById('settingsStatus');
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'text-xs mb-3 ' + (cls || 'text-slate-600');
+      el.classList.remove('hidden');
+    }
+
+    // Dynamic public page rendering
+    function applyPublicSettings(s) {
+      if (!s) return;
+      
+      if (s.EVENT_NAME) { const el = document.querySelector('#userPage + * h1, header h1, .gold-gradient h1'); /* update header */ }
+      // Update branding colors
+      if (s.PRIMARY_COLOR && s.SECONDARY_COLOR) {
+        const style = document.getElementById('dynamic-brand-style') || (() => { const st = document.createElement('style'); st.id = 'dynamic-brand-style'; document.head.appendChild(st); return st; })();
+        style.textContent = `.gold-gradient { background: linear-gradient(135deg, ${s.PRIMARY_COLOR}, ${s.SECONDARY_COLOR}) !important; }`;
+      }
+      // Update poster
+      if (s.POSTER_URL) {
+        const posters = document.querySelectorAll('img[src*="boards.jpeg"], img[alt*="Poster"]');
+        posters.forEach(img => { img.src = s.POSTER_URL; img.alt = s.EVENT_NAME || s.EVENT_SHORT_NAME || ''; });
+      }
+      // Update footer
+      if (s.FOOTER_TEXT) {
+        const footerOrg = document.querySelector('footer p:first-child');
+        if (footerOrg) footerOrg.innerHTML = '&copy; <span id="currentYear"></span> ' + s.FOOTER_TEXT;
+      }
+      // Update PDF title/venue for generatePhysicalPDF
+      window.dynamicPdfTitle = s.PDF_TITLE || '';
+      window.dynamicPdfVenue = s.PDF_VENUE || '';
+      window.dynamicEventName = s.EVENT_NAME || '';
+      window.dynamicEventShort = s.EVENT_SHORT_NAME || '';
+      window.dynamicWhatsAppLink = s.WHATSAPP_GROUP_LINK || '';
+      window.dynamicWhatsAppMsg = s.WHATSAPP_INVITE_MESSAGE || '';
+      window.dynamicQuota = s.PARTICIPANT_QUOTA || '';
+      window.dynamicVenue = s.EVENT_VENUE || '';
+      window.dynamicSchedule = s.SCHEDULE_JSON ? JSON.parse(s.SCHEDULE_JSON) : null;
+      window.dynamicClosedMsg = s.CLOSED_MESSAGE || '';
+      window.dynamicSuccessMsg = s.SUCCESS_MESSAGE || '';
+      
+      // Update schedule in success page if available
+      if (window.dynamicSchedule && window.dynamicEventName) updateSuccessSchedule();
+    }
+    
+    function updateSuccessSchedule() {
+      const schedTitle = document.querySelector('#successPage h3');
+      if (schedTitle && window.dynamicEventName) schedTitle.textContent = 'Aturcara ' + window.dynamicEventName;
+      // Schedule items rendering uses existing logic in the public section
     }
 
     window.onload = function() {
