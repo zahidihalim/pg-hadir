@@ -1,4 +1,4 @@
-const SHEET_ID = "1bR6V_w1E0e6Kwyf8lwwznXE_f88ZJ3yyonF6BhI-AMQ";
+const SHEET_ID = "YOUR_SPREADSHEET_ID"; // Replace with actual Google Sheet ID in Script Properties
 const PARTICIPANT_SHEET = "Form_Responses";
 const ATTENDANCE_SHEET = "Kehadiran";
 const SETTINGS_SHEET = "Settings";
