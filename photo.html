@@ -1,0 +1,2389 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>
+      SEMINAR BOARDS - PG BANGI | Simpanan Kenangan Digital Eksklusif
+    </title>
+    <meta
+      name="title"
+      content="SEMINAR BOARDS - PG BANGI | Simpanan Kenangan Digital Eksklusif"
+    />
+    <meta
+      name="description"
+      content="Akses galeri peribadi anda dengan selamat. Sistem simpanan memori digital beresolusi tinggi dengan perlindungan PIN dan watermark pintar. Designed by Ai4i."
+    />
+    <meta name="author" content="Zahidi Halim" />
+    <meta
+      name="keywords"
+      content="private gallery, secured photo vault, digital memory, zahidi, photo sharing, secured album"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#111827" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://arleta.site/interactivelink/540/pmv.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://arleta.site/interactivelink/540/pmv.png"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://inovasi.zahidi.my/pmv" />
+    <meta property="og:title" content="SEMINAR BOARDS - PG BANGI" />
+    <meta
+      property="og:description"
+      content="Akses selamat ke koleksi gambar peribadi anda. Masukkan PIN untuk melihat kenangan digital eksklusif."
+    />
+    <meta
+      property="og:image"
+      content="https://arleta.site/interactivelink/540/pmv1.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://inovasi.zahidi.my/pmv" />
+    <meta
+      property="twitter:title"
+      content="SEMINAR BOARDS - PG BANGI"
+    />
+    <meta
+      property="twitter:description"
+      content="Akses selamat ke koleksi gambar peribadi anda. Masukkan PIN untuk melihat kenangan digital eksklusif."
+    />
+    <meta
+      property="twitter:image"
+      content="https://arleta.site/interactivelink/540/pmv1.jpg"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SEMINAR BOARDS - PG BANGI",
+        "url": "https://inovasi.zahidi.my/pmv",
+        "description": "A secured single-file web application for storing and viewing private photo collections with PIN access protection.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All",
+        "author": {
+          "@type": "Person",
+          "name": "Zahidi Halim",
+          "url": "https://zahidi.my"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "MYR"
+        },
+        "featureList": "Secure PIN Access, High-Resolution Gallery, Smart Watermark Download, Auto Slideshow",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "contentUrl": "https://arleta.site/interactivelink/540/pmv1.jpg"
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .loader {
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .active-thumb {
+        border: 2px solid #3b82f6;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        opacity: 1 !important;
+        transform: scale(1.05);
+      }
+      .watermark-overlay {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        text-align: right;
+        pointer-events: none;
+        opacity: 0.6;
+        text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+        user-select: none;
+      }
+      .watermark-line1 {
+        font-size: clamp(1rem, 4vw, 2rem);
+        font-weight: 800;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1;
+      }
+      .watermark-line2 {
+        font-size: clamp(0.6rem, 2vw, 1rem);
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.7);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .glass-panel {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Masonry Grid */
+      .masonry-grid {
+        columns: 2;
+        column-gap: 8px;
+      }
+      @media (min-width: 768px) {
+        .masonry-grid {
+          columns: 3;
+        }
+      }
+      @media (min-width: 1024px) {
+        .masonry-grid {
+          columns: 4;
+        }
+      }
+      .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 8px;
+      }
+      .masonry-item img {
+        width: 100%;
+        display: block;
+        border-radius: 8px;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          opacity 0.2s;
+      }
+      .masonry-item img:hover {"absolute bottom-6 left-1/2 transform -translate-x-1/2 flex     gap-4 z-20" > < button onclick = "toggleSlideshow()" class = "inline-flex items-center      gap-2 px-5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs      font-bold rounded-full shadow-md transition duration-300 border      border-gray-700" > < svg id = "icon-play" xmlns = "http://www.w3.org/2000/svg" viewBox = "0 0 24 24"   fill = "currentColor" class = "w-4 h-4 text-blue-500 transition-all duration   -300" > < path d = "M4 4l12 6-12 6" /> </ svg > < span id = "text-slideshow" class = "tracking-wider" > AUTO PLAY </ span > </ button > </ div > < div id = "thumb-strip" class = "absolute bottom-20 left-0 right-0 h-16 bg-gradient-to-t from   -black/80 to-transparent p-2 hidden" > < div id = "gallery-grid" class = "flex gap-2 overflow-x-auto hide-scrollbar h-full items    -center" > </ div > </ div > </div>
+        transform: scale(1.03);
+      }
+      
+     /* Sembunyikan thumbnail luar dan butang autoplay apabila masuk mod GRID */
+#view-slideshow.hidden ~ #thumb-strip,
+#view-slideshow.hidden ~ #autoplay-outside-container {
+    display: none !important;
+}
+      
+      /* =====================
+   SLIDESHOW EFFECTS
+   ===================== */
+.slide-active {
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dissolveEffect {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
+.effect-dissolve { animation-name: dissolveEffect; }
+
+@keyframes zoomInEffect {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.effect-zoom-in { animation-name: zoomInEffect; }
+
+@keyframes zoomOutEffect {
+    from { transform: scale(1.15); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.effect-zoom-out { animation-name: zoomOutEffect; }
+
+@keyframes slideDownEffect {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.effect-slide-down { animation-name: slideDownEffect; }
+
+@keyframes boxEffect {
+    from { clip-path: inset(20%); opacity: 0; }
+    to { clip-path: inset(0%); opacity: 1; }
+}
+.effect-box { animation-name: boxEffect; }
+
+/* Paksa kursor jadi tangan pada gambar dalam gallery-grid */
+    #gallery-grid > div {
+        cursor: grab;
+    }
+    #gallery-grid > div:active {
+        cursor: grabbing;
+    }
+
+    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  </head>
+  <body class="bg-gray-900 min-h-screen text-gray-200 flex flex-col">
+    <script>
+      const GAS_URL =
+        "https://script.google.com/macros/s/AKfycbzg1hG7kKoSMLghtRAXkZHHYAxlwIipQmXDwOl3EFS9JLn3nT5JNEPHvAELiQBOeceSpw/exec";
+    </script>
+
+    <div
+      id="toast"
+      class="fixed top-5 right-5 z-50 hidden px-6 py-3 rounded shadow-lg text-white font-bold transition transform duration-300"
+    ></div>
+    <div
+      id="loading"
+      class="fixed inset-0 bg-black bg-opacity-80 z-[60] hidden flex flex-col items-center justify-center backdrop-blur-sm"
+    >
+      <div class="loader mb-4"></div>
+      <p
+        class="text-white text-lg font-light tracking-widest"
+        id="loading-text"
+      >
+        PROCESSING
+      </p>
+    </div>
+
+    <div class="flex-grow container mx-auto px-4 py-6 max-w-6xl flex flex-col">
+      <!-- ==================== LOGIN VIEW ==================== -->
+      <div
+        id="view-login"
+        class="flex-grow flex flex-col items-center justify-center gap-3 fade-in pt-6"
+      >
+        <!-- Public Login Title -->
+        <div class="text-center px-4">
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-tight leading-tight">
+            SEMINAR BOARDS
+          </h1>
+          <p class="mt-1 text-xs text-gray-500 uppercase tracking-[0.2em] font-bold">Secured Photo Vault</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 mx-4">
+          <label class="block text-gray-400 text-xs font-bold mb-4 text-center tracking-[0.2em] uppercase">Security Clearance</label>
+          <input type="password" id="input-pin" class="w-full px-4 py-4 rounded-xl bg-gray-900 border border-gray-600 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-center text-3xl tracking-[0.5em] mb-6 transition placeholder-gray-700" placeholder="••••••" onkeydown="if (event.key === 'Enter') accessGallery();" />
+          <button onclick="accessGallery()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold py-4 rounded-xl transition shadow-lg transform hover:-translate-y-1">ACCESS ALBUM</button>
+          <p id="error-msg" class="text-red-400 text-center mt-4 text-sm hidden animate-pulse"></p>
+          <div class="mt-6 text-center border-t border-gray-700 pt-4">
+            <button onclick="showAdminLogin()" class="text-xs text-gray-500 hover:text-gray-400 transition">Admin Access</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ADMIN LOGIN VIEW ==================== -->
+      <div id="view-admin-login" class="hidden fade-in">
+        <div
+          class="max-w-sm mx-auto bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 mt-10"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <button
+              onclick="hideAdminLogin()"
+              class="text-gray-400 hover:text-white transition"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+            </button>
+            <h2 class="text-xl font-bold text-white">Admin Panel</h2>
+          </div>
+          <input
+            type="password"
+            id="admin-pass-input"
+            class="w-full px-4 py-3 rounded-xl border border-gray-600 bg-gray-900 text-white text-center mb-4 focus:border-blue-500 outline-none"
+            placeholder="Password"
+            onkeydown="if (event.key === 'Enter') verifyAdmin();"
+          />
+          <button
+            onclick="verifyAdmin()"
+            class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow"
+          >
+            Login
+          </button>
+          <p
+            id="admin-error-msg"
+            class="text-red-400 text-center mt-3 text-sm hidden"
+          ></p>
+        </div>
+      </div>
+
+      <!-- ==================== ADMIN PANEL VIEW ==================== -->
+      <div id="view-admin" class="hidden fade-in flex flex-col gap-4">
+        <!-- Admin Header -->
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white">Album Manager</h2>
+            <p class="text-xs text-gray-500 uppercase tracking-wider">
+              Admin Dashboard
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              onclick="adminLogout()"
+              class="text-xs font-bold text-red-400 hover:text-red-300 border border-red-900 bg-red-900/20 px-3 py-1.5 rounded hover:bg-red-900/40 transition"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+
+        <!-- Album Selector -->
+        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <div class="flex gap-3 mb-4">
+            <select
+              id="admin-album-select"
+              onchange="onAlbumSelectChange()"
+              class="flex-1 bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+            >
+              <option value="">-- Pilih Album --</option>
+            </select>
+            <button
+              onclick="createNewAlbum()"
+              class="bg-green-600 hover:bg-green-500 text-white font-bold px-4 py-2 rounded-lg transition text-sm flex items-center gap-2"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                ></path>
+              </svg>
+              Baru
+            </button>
+          </div>
+        </div>
+
+        <div id="admin-video-panel" class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <h3 class="text-white font-bold text-sm mb-3 tracking-wider text-blue-400">
+            🔧 Urus Galeri Video
+          </h3>
+          
+          <div class="flex flex-col sm:flex-row gap-3 mb-3">
+            <input 
+              id="admin-video-title" 
+              type="text" 
+              placeholder="Masukkan Tajuk Video..." 
+              class="flex-1 bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+            >
+            <input 
+              id="admin-video-url" 
+              type="text" 
+              placeholder="Tampal URL YouTube (cth: https://youtu.be/...)" 
+              class="flex-1 bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+            >
+          </div>
+          
+          <button 
+            onclick="addVideoByAdmin()" 
+            class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg transition text-sm shadow-md"
+          >
+            + Tambah Video Ke Galeri
+          </button>
+
+          <div class="mt-4 border-t border-gray-700 pt-3">
+            <p class="text-gray-400 text-[11px] font-bold mb-2 uppercase tracking-wider">
+              Senarai Video Semasa (Klik untuk padam):
+            </p>
+            <div id="admin-video-list" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <!-- Album Metadata Form -->
+        <div
+          id="admin-album-form"
+          class="bg-gray-800 rounded-xl p-5 border border-gray-700 hidden"
+        >
+          <h3
+            class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-700 pb-2"
+          >
+            <span id="form-title">Album Baru</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider"
+                >Album Name</label
+              >
+              <input
+                type="text"
+                id="meta-albumName"
+                class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+                placeholder="Nama Album"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider"
+                >PIN Access</label
+              >
+              <input
+                type="text"
+                id="meta-pin"
+                class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+                placeholder="6-digit PIN"
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label
+              class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider"
+              >Music URL (optional)</label
+            >
+            <input
+              type="text"
+              id="meta-musicUrl"
+              class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+              placeholder="https://... or upload below"
+            />
+            <div class="flex gap-2 mt-2 items-center">
+              <input
+                type="file"
+                id="admin-music-file"
+                accept="audio/*"
+                class="hidden"
+                onchange="onMusicFileSelected(this.files)"
+              />
+              <button
+                onclick="document.getElementById('admin-music-file').click()"
+                class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition flex items-center gap-1"
+              >
+                <svg
+                  class="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                  ></path>
+                </svg>
+                Upload MP3
+              </button>
+              <span
+                id="music-file-name"
+                class="text-xs text-gray-500 truncate max-w-[120px]"
+              ></span>
+              <button
+                id="btn-upload-music"
+                onclick="uploadMusicFile()"
+                class="hidden text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition"
+              >
+                Upload
+              </button>
+            </div>
+            <p class="text-xs text-gray-600 mt-1">
+              MP3 recommended. Max ~10MB per file.
+            </p>
+          </div>
+
+          <div class="border-t border-gray-700 pt-4 mb-4">
+            <label
+              class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider"
+              >Watermark Settings</label
+            >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <input
+                type="text"
+                id="meta-wmText1"
+                class="bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+                placeholder="Watermark Line 1"
+              />
+              <input
+                type="text"
+                id="meta-wmText2"
+                class="bg-gray-900 border border-gray-600 text-white rounded-lg px-3 py-2 focus:border-blue-500 outline-none text-sm"
+                placeholder="Watermark Line 2"
+              />
+            </div>
+            <div class="grid grid-cols-3 gap-3 mt-3">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Font</label>
+                <select
+                  id="meta-wmFont"
+                  class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-2 py-2 focus:border-blue-500 outline-none text-xs"
+                >
+                  <option value="Inter">Inter</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Size</label>
+                <select
+                  id="meta-wmSize"
+                  class="w-full bg-gray-900 border border-gray-600 text-white rounded-lg px-2 py-2 focus:border-blue-500 outline-none text-xs"
+                >
+                  <option value="small">Small</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Color</label>
+                <input
+                  type="color"
+                  id="meta-wmColor"
+                  value="#ffffff"
+                  class="w-full h-9 bg-gray-900 border border-gray-600 rounded-lg cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button
+              onclick="saveAlbumMeta()"
+              class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg transition text-sm"
+            >
+              Simpan Album
+            </button>
+            <button
+              onclick="clearAlbumForm()"
+              class="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition text-sm"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div
+          id="admin-upload-section"
+          class="bg-gray-800 rounded-xl p-5 border border-gray-700 hidden"
+        >
+          <label
+            class="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider"
+            >Upload Images</label
+          >
+          <div
+            class="border-2 border-dashed border-gray-600 rounded-xl p-6 text-center hover:border-blue-500 transition cursor-pointer"
+            onclick="document.getElementById('admin-files').click()"
+          >
+            <svg
+              class="w-8 h-8 mx-auto text-gray-500 mb-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              ></path>
+            </svg>
+            <p class="text-gray-400 text-sm">Click or drag images here</p>
+            <input
+              type="file"
+              id="admin-files"
+              multiple
+              accept="image/*"
+              class="hidden"
+              onchange="previewUploadFiles(this.files)"
+            />
+          </div>
+          <div
+            id="upload-preview-list"
+            class="mt-3 grid grid-cols-4 gap-2"
+          ></div>
+          <button
+            id="btn-start-upload"
+            onclick="uploadFiles()"
+            class="mt-4 w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-lg transition text-sm hidden"
+          >
+            Upload
+          </button>
+        </div>
+
+        <!-- Photo List -->
+        <div
+          id="admin-photo-list"
+          class="bg-gray-800 rounded-xl p-5 border border-gray-700 hidden"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <label
+              class="text-xs font-bold text-gray-400 uppercase tracking-wider"
+              >Photos in Album</label
+            >
+            <span
+              id="photo-count-label"
+              class="text-xs text-gray-500 bg-gray-900 px-2 py-1 rounded"
+              >0 photos</span
+            >
+          </div>
+          <div
+            id="admin-photo-grid"
+            class="grid grid-cols-3 md:grid-cols-4 gap-3"
+          ></div>
+          <p id="no-photos-msg" class="text-center text-gray-500 py-8 hidden">
+            Tiada gambar lagi.
+          </p>
+        </div>
+      </div>
+
+      <!-- ==================== GALLERY VIEW (PUBLIC) ==================== -->
+      <div id="view-gallery" class="hidden fade-in flex flex-col h-full">
+        <!-- Gallery Header -->
+        <div class="flex justify-between items-center mb-4 px-1">
+          <div>
+            <h2
+              id="gallery-title"
+              class="text-lg font-bold text-white truncate max-w-[200px] md:max-w-md"
+            >
+              Album
+            </h2>
+            <p class="text-xs text-gray-500 uppercase tracking-wider">
+              Secured Collection
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              onclick="logout()"
+              class="text-xs font-bold text-red-400 hover:text-red-300 border border-red-900 bg-red-900/20 px-3 py-1 rounded hover:bg-red-900/40 transition"
+            >
+              LOGOUT
+            </button>
+          </div>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="flex justify-center items-center gap-4 mb-8">
+  <button id="tab-btn-gambar" onclick="switchMainGallery('gambar')" class="px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-blue-600 text-white shadow-lg;">
+    Galeri Gambar
+  </button>
+  <button id="tab-btn-video" onclick="switchMainGallery('video')" class="px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-gray-800 text-gray-400 hover:text-white border border-gray-700 shadow-lg;">
+    Galeri Video
+  </button>
+</div>
+
+<div id="wrapper-galeri-gambar" class="block">
+
+<div class="flex justify-center mb-4">
+          <div
+            class="bg-gray-800 rounded-full p-1 flex gap-1 border border-gray-700"
+          >
+            <button
+              id="btn-view-slideshow"
+              onclick="setViewMode('slideshow')"
+              class="px-4 py-1.5 rounded-full text-xs font-bold transition bg-blue-600 text-white"
+            >
+              Slideshow
+            </button>
+            <button
+              id="btn-view-grid"
+              onclick="setViewMode('grid')"
+              class="px-4 py-1.5 rounded-full text-xs font-bold transition text-gray-400 hover:text-white"
+            >
+              Grid
+            </button>
+            <button
+              id="btn-view-refresh"
+              onclick="refreshGallery()"
+              class="px-4 py-1.5 rounded-full text-xs font-bold transition text-gray-400 hover:text-white border border-gray-600 hover:border-gray-500"
+              title="Refresh album"
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Music Control -->
+        <div id="music-control" class="hidden flex justify-center mb-3">
+          <button
+            id="btn-music-toggle"
+            onclick="toggleMusic()"
+            class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white px-4 py-1.5 rounded-full text-xs font-bold transition"
+          >
+            <svg
+              id="icon-music"
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+              ></path>
+            </svg>
+            <span id="text-music">Play Music</span>
+          </button>
+        </div>
+
+        <!-- Slideshow View -->
+        <div
+          id="view-slideshow"
+          class="relative flex-grow bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 mb-4 group ring-1 ring-white/10 min-h-[50vh]"
+        >
+
+          <button
+            onclick="downloadWithWatermark()"
+            class="absolute top-4 right-4 z-20 glass-panel hover:bg-white/20 text-white p-2 rounded-full transition"
+            title="Download"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              ></path>
+            </svg>
+          </button>
+
+          <div
+            class="w-full h-full relative flex items-center justify-center bg-[#0a0a0a]"
+          >
+            <img
+              id="hero-img"
+              src=""
+              class="max-w-full max-h-[60vh] md:max-h-[65vh] object-contain cursor-zoom-in transition-opacity duration-300 opacity-0"
+              onclick="openModalCurrent()"
+            />
+
+            <div id="watermark-overlay" class="watermark-overlay">
+              <div class="watermark-line1" id="wm-line1">
+                SEMINAR BOARDS
+              </div>
+              <div class="watermark-line2" id="wm-line2">
+                PG Bangi | 13 Jun 2026
+              </div>
+            </div>
+          </div>
+
+          <button
+            onclick="changeSlide(-1)"
+            class="absolute left-4 top-1/2 -translate-y-1/2 glass-panel hover:bg-white/20 text-white p-3 rounded-full transition opacity-0 group-hover:opacity-100 z-10"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+          </button>
+          <button
+            onclick="changeSlide(1)"
+            class="absolute right-4 top-1/2 -translate-y-1/2 glass-panel hover:bg-white/20 text-white p-3 rounded-full transition opacity-0 group-hover:opacity-100 z-10"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </button>
+
+          </div> <div id="thumb-strip" class="relative mt-4 w-full h-20 bg-gray-900/50 border border-gray-800 rounded-2xl p-2 hidden">
+  <div id="gallery-grid" class="flex gap-2 overflow-x-auto hide-scrollbar h-full items-center justify-center"></div>
+</div>
+
+<div id="autoplay-outside-container" class="flex justify-center items-center gap-4 py-4 bg-transparent">
+  
+  <div class="px-4 py-2 bg-gray-800 text-gray-300 text-xs font-bold rounded-full shadow-md border border-gray-700 tracking-wider">
+    <span id="counter-text">0 / 0</span>
+  </div>
+
+  <button onclick="toggleSlideshow()" class="inline-flex items-center gap-2 px-5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-full shadow-md transition duration-300 border border-gray-700">
+    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-blue-500 transition-all duration-300">
+      <path d="M4 4l12 6-12 6" />
+    </svg>
+    <span id="text-slideshow" class="tracking-wider">AUTO PLAY</span>
+  </button>
+
+</div>
+
+</div> 
+
+<div id="wrapper-galeri-video" class="hidden w-full max-w-6xl mx-auto px-4">
+  <div id="gallery-video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</div>
+
+        <!-- Grid View -->
+        <div
+          id="view-grid"
+          class="hidden flex-grow bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 mb-4 min-h-[50vh] p-4"
+        >
+          <div id="masonry-container" class="masonry-grid"></div>
+          <p id="empty-state" class="hidden text-center text-gray-500 py-20">
+            Tiada gambar dijumpai.
+          </p>
+        </div>
+
+        <!-- Thumbnail Strip -->
+        <div
+          id="thumb-strip-container"
+          class="h-20 md:h-24 flex-shrink-0 relative bg-gray-800/50 rounded-xl p-2 border border-gray-700 hidden"
+        >
+          <div
+            id="gallery-grid-bottom"
+            class="flex gap-2 overflow-x-auto hide-scrollbar h-full items-center"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="text-center py-6 text-gray-500 text-sm mt-auto border-t border-gray-800"
+    >
+      <p>
+        &copy; Copyright 2026
+        <span class="font-bold text-gray-400">SEMINAR BOARDS</span>
+      </p>
+      <p class="mt-1 text-xs">
+        Sabtu, 13 Jun 2026 | designed by
+        <a
+          href="https://ai4i.my"
+          target="_blank"
+          class="text-blue-500 hover:text-blue-400 hover:underline transition"
+          >Ai4i</a
+        >
+      </p>
+    </footer>
+
+    <!-- Image Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center backdrop-blur-md"
+    >
+      <button
+        onclick="closeModal()"
+        class="absolute top-4 right-4 text-white hover:text-gray-300 z-50 p-2 bg-white/10 rounded-full"
+      >
+        <svg
+          class="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+      <button
+        onclick="changeSlide(-1)"
+        class="absolute left-4 top-1/2 -translate-y-1/2 text-white p-4 rounded-full hover:bg-white/10 transition z-50"
+      >
+        <svg
+          class="w-10 h-10"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
+      <img
+        id="modal-img"
+        src=""
+        class="max-h-screen max-w-full object-contain shadow-2xl"
+      />
+      <button
+        onclick="changeSlide(1)"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-white p-4 rounded-full hover:bg-white/10 transition z-50"
+      >
+        <svg
+          class="w-10 h-10"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div
+      id="delete-modal"
+      class="fixed inset-0 bg-black/80 z-[110] hidden flex items-center justify-center"
+    >
+      <div
+        class="bg-gray-800 rounded-xl p-6 max-w-sm w-full mx-4 border border-gray-700"
+      >
+        <h3 class="text-white font-bold text-lg mb-2">Delete Photo?</h3>
+        <p class="text-gray-400 text-sm mb-4">
+          Gambar akan dipadam secara tidak kekal.
+        </p>
+        <div class="flex gap-3">
+          <button
+            onclick="closeDeleteModal()"
+            class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 rounded-lg transition"
+          >
+            Batal
+          </button>
+          <button
+            onclick="confirmDeletePhoto()"
+            class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg transition"
+          >
+            Padam
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <audio id="bg-music" loop></audio>
+
+    <script>
+      // =====================
+      // GLOBAL STATE
+      // =====================
+      let SESSION_ADMIN_PASS = "";
+      let CURRENT_ALBUM_ID = null;
+      let CURRENT_ALBUM_META = null;
+      let CURRENT_IMAGES = [];
+      let CURRENT_INDEX = 0;
+      let SLIDESHOW_INTERVAL = null;
+      let VIEW_MODE = "slideshow";
+      let PENDING_DELETE_PHOTO_ID = null;
+      let PENDING_MUSIC_FILE = null;
+      let uploadFileCount = 0;
+      let MUSIC_READY = false;
+      let MUSIC_LOADING = false;
+      let CURRENT_PIN = null;
+      const SESSION_PIN_KEY = "photoVaultPin";
+
+      // =====================
+      // INIT
+      // =====================
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("admin") === "1") {
+          document.getElementById("view-login").classList.add("hidden");
+          document
+            .getElementById("view-admin-login")
+            .classList.remove("hidden");
+          document.body.classList.replace("bg-gray-900", "bg-gray-100");
+          
+          // TAMBAH INI: Supaya senarai video admin dipanggil awal-awal lagi
+          if (typeof renderAdminVideoList === "function") {
+            renderAdminVideoList();
+          }
+        } else {
+          // Auto-load stored PIN session
+          const storedPin = localStorage.getItem(SESSION_PIN_KEY);
+          if (storedPin) {
+            accessGallery(storedPin);
+          }
+        }
+        document.addEventListener("keydown", (e) => {
+          if (
+            document.getElementById("view-gallery").classList.contains("hidden")
+          )
+            return;
+          if (e.key === "ArrowLeft") changeSlide(-1);
+          if (e.key === "ArrowRight") changeSlide(1);
+          if (e.key === "Escape") closeModal();
+        });
+      });
+
+      // =====================
+      // ADMIN - VERIFY LOGIN
+      // =====================
+      async function verifyAdmin() {
+        const pass = document.getElementById("admin-pass-input").value;
+        if (!pass) return showToast("Masukkan password", "error");
+        showLoading(true, "VERIFYING...");
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "checkAdmin", password: pass }),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            SESSION_ADMIN_PASS = pass;
+            document.getElementById("view-admin-login").classList.add("hidden");
+            document.getElementById("view-admin").classList.remove("hidden");
+            renderAdminVideoList();
+            document.body.classList.remove("bg-gray-100");
+            document.body.classList.add("bg-gray-900");
+            loadAdminAlbums();
+            showToast("Access Granted", "success");
+          } else {
+            document.getElementById("admin-error-msg").innerText =
+              "Access Denied";
+            document
+              .getElementById("admin-error-msg")
+              .classList.remove("hidden");
+          }
+        } catch (err) {
+          showToast("Connection Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      async function loadAdminAlbums() {
+        showLoading(true, "LOADING...");
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "listAlbums",
+              password: SESSION_ADMIN_PASS,
+            }),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            renderAlbumSelect(json.albums);
+          }
+        } catch (err) {
+          showToast("Load albums failed", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function renderAlbumSelect(albums) {
+        const select = document.getElementById("admin-album-select");
+        select.innerHTML = '<option value="">-- Pilih Album --</option>';
+        albums.forEach((a) => {
+          const opt = document.createElement("option");
+          opt.value = a.albumId;
+          opt.textContent = `${a.albumName} (${a.pin}) - ${a.photoCount} foto`;
+          select.appendChild(opt);
+        });
+      }
+
+      function onAlbumSelectChange() {
+        const albumId = document.getElementById("admin-album-select").value;
+        if (albumId) {
+          loadAlbumAdmin(albumId);
+        } else {
+          hideAlbumForm();
+        }
+      }
+
+      async function loadAlbumAdmin(albumId) {
+        showLoading(true, "LOADING...");
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "getAlbumAdmin",
+              password: SESSION_ADMIN_PASS,
+              albumId,
+            }),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            CURRENT_ALBUM_ID = albumId;
+            CURRENT_ALBUM_META = json.album;
+            showAlbumForm(json.album);
+            renderAdminPhotos(json.photos);
+            document
+              .getElementById("admin-upload-section")
+              .classList.remove("hidden");
+          } else {
+            showToast(json.message || "Load failed", "error");
+          }
+        } catch (err) {
+          showToast("Connection Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function showAlbumForm(album) {
+        const form = document.getElementById("admin-album-form");
+        form.classList.remove("hidden");
+
+        document.getElementById("form-title").innerText = album
+          ? "Edit Album"
+          : "Album Baru";
+
+        // Reset music upload UI
+        document.getElementById("admin-music-file").value = "";
+        document.getElementById("music-file-name").innerText = "";
+        document.getElementById("btn-upload-music").classList.add("hidden");
+        PENDING_MUSIC_FILE = null;
+
+        if (album) {
+          document.getElementById("meta-albumName").value =
+            album.albumName || "";
+          document.getElementById("meta-pin").value = album.pin || "";
+          document.getElementById("meta-musicUrl").value = album.musicUrl || "";
+          document.getElementById("meta-wmText1").value =
+            album.watermarkText1 || "";
+          document.getElementById("meta-wmText2").value =
+            album.watermarkText2 || "";
+          document.getElementById("meta-wmFont").value =
+            album.watermarkFont || "Inter";
+          document.getElementById("meta-wmSize").value =
+            album.watermarkSize || "medium";
+          document.getElementById("meta-wmColor").value =
+            album.watermarkColor || "#ffffff";
+        }
+      }
+
+      function hideAlbumForm() {
+        document.getElementById("admin-album-form").classList.add("hidden");
+        document.getElementById("admin-upload-section").classList.add("hidden");
+        document.getElementById("admin-photo-list").classList.add("hidden");
+        CURRENT_ALBUM_ID = null;
+        CURRENT_ALBUM_META = null;
+      }
+
+      function clearAlbumForm() {
+        document.getElementById("meta-albumName").value = "";
+        document.getElementById("meta-pin").value = "";
+        document.getElementById("meta-musicUrl").value = "";
+        document.getElementById("meta-wmText1").value = "";
+        document.getElementById("meta-wmText2").value = "";
+        document.getElementById("meta-wmFont").value = "Inter";
+        document.getElementById("meta-wmSize").value = "medium";
+        document.getElementById("meta-wmColor").value = "#ffffff";
+        document.getElementById("admin-music-file").value = "";
+        document.getElementById("music-file-name").innerText = "";
+        document.getElementById("btn-upload-music").classList.add("hidden");
+        PENDING_MUSIC_FILE = null;
+      }
+
+      function onMusicFileSelected(files) {
+        const nameEl = document.getElementById("music-file-name");
+        const btnEl = document.getElementById("btn-upload-music");
+        if (files.length === 0) {
+          PENDING_MUSIC_FILE = null;
+          nameEl.innerText = "";
+          btnEl.classList.add("hidden");
+          return;
+        }
+        PENDING_MUSIC_FILE = files[0];
+        nameEl.innerText = files[0].name;
+        btnEl.classList.remove("hidden");
+      }
+
+      async function uploadMusicFile() {
+        if (!CURRENT_ALBUM_ID) {
+          showToast("Simpan album dulu sebelum upload music", "error");
+          return;
+        }
+        if (!PENDING_MUSIC_FILE) {
+          showToast("Pilih fail audio dulu", "error");
+          return;
+        }
+
+        showLoading(true, "UPLOADING MUSIC...");
+        try {
+          const reader = new FileReader();
+          reader.onload = async function (e) {
+            try {
+              const res = await fetch(GAS_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                  action: "uploadMusic",
+                  password: SESSION_ADMIN_PASS,
+                  albumId: CURRENT_ALBUM_ID,
+                  audio: {
+                    name: PENDING_MUSIC_FILE.name,
+                    type: PENDING_MUSIC_FILE.type || "audio/mpeg",
+                    data: e.target.result,
+                  },
+                }),
+              });
+              const json = await res.json();
+              if (json.status === "success") {
+                document.getElementById("meta-musicUrl").value = json.musicUrl;
+                if (CURRENT_ALBUM_META)
+                  CURRENT_ALBUM_META.musicUrl = json.musicUrl;
+                document.getElementById("admin-music-file").value = "";
+                document.getElementById("music-file-name").innerText = "";
+                document
+                  .getElementById("btn-upload-music")
+                  .classList.add("hidden");
+                PENDING_MUSIC_FILE = null;
+                showToast("Music uploaded!", "success");
+              } else {
+                showToast(json.message || "Upload failed", "error");
+              }
+            } catch (err) {
+              showToast("Connection Error", "error");
+            } finally {
+              showLoading(false);
+            }
+          };
+          reader.readAsDataURL(PENDING_MUSIC_FILE);
+        } catch (err) {
+          showToast("Error reading file", "error");
+          showLoading(false);
+        }
+      }
+
+      function createNewAlbum() {
+        CURRENT_ALBUM_ID = null;
+        CURRENT_ALBUM_META = null;
+        clearAlbumForm();
+        document.getElementById("form-title").innerText = "Album Baru";
+        document.getElementById("admin-album-form").classList.remove("hidden");
+        document
+          .getElementById("admin-upload-section")
+          .classList.remove("hidden");
+        document.getElementById("admin-photo-list").classList.add("hidden");
+        document.getElementById("admin-album-select").value = "";
+      }
+
+      async function saveAlbumMeta() {
+        const albumName = document
+          .getElementById("meta-albumName")
+          .value.trim();
+        const pin = document.getElementById("meta-pin").value.trim();
+        if (!albumName || !pin)
+          return showToast("Nama album & PIN diperlukan", "error");
+
+        const payload = {
+          action: "saveAlbumMeta",
+          password: SESSION_ADMIN_PASS,
+          albumId: CURRENT_ALBUM_ID,
+          albumName,
+          pin,
+          musicUrl: document.getElementById("meta-musicUrl").value.trim(),
+          watermarkText1: document.getElementById("meta-wmText1").value.trim(),
+          watermarkText2: document.getElementById("meta-wmText2").value.trim(),
+          watermarkFont: document.getElementById("meta-wmFont").value,
+          watermarkSize: document.getElementById("meta-wmSize").value,
+          watermarkColor: document.getElementById("meta-wmColor").value,
+        };
+
+        showLoading(true, "SAVING...");
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            showToast(json.message, "success");
+            CURRENT_ALBUM_ID = json.albumId;
+            loadAdminAlbums();
+          } else {
+            showToast(json.message || "Save failed", "error");
+          }
+        } catch (err) {
+          showToast("Connection Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function renderAdminPhotos(photos) {
+        const list = document.getElementById("admin-photo-list");
+        const grid = document.getElementById("admin-photo-grid");
+        const noMsg = document.getElementById("no-photos-msg");
+        const countLabel = document.getElementById("photo-count-label");
+
+        const activePhotos = photos.filter((p) => !p.isDeleted);
+        countLabel.innerText = `${activePhotos.length} photos`;
+
+        if (activePhotos.length === 0) {
+          grid.innerHTML = "";
+          noMsg.classList.remove("hidden");
+          list.classList.remove("hidden");
+          return;
+        }
+
+        noMsg.classList.add("hidden");
+        list.classList.remove("hidden");
+        grid.innerHTML = "";
+
+        activePhotos.forEach((photo, idx) => {
+          const div = document.createElement("div");
+          div.className =
+            "relative group bg-gray-900 rounded-lg overflow-hidden aspect-square";
+          div.innerHTML = `
+            <img src="https://drive.google.com/thumbnail?id=${photo.fileId}&sz=w300" class="w-full h-full object-cover" loading="lazy">
+            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                <button onclick="promptDeletePhoto('${photo.id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-full transition" title="Delete">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            </div>
+            <div class="absolute bottom-1 left-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">${idx + 1}</div>
+        `;
+          grid.appendChild(div);
+        });
+      }
+
+      function promptDeletePhoto(photoId) {
+        PENDING_DELETE_PHOTO_ID = photoId;
+        document.getElementById("delete-modal").classList.remove("hidden");
+      }
+
+      function closeDeleteModal() {
+        PENDING_DELETE_PHOTO_ID = null;
+        document.getElementById("delete-modal").classList.add("hidden");
+      }
+
+      async function confirmDeletePhoto() {
+        if (!PENDING_DELETE_PHOTO_ID) return;
+        showLoading(true, "DELETING...");
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "deletePhoto",
+              password: SESSION_ADMIN_PASS,
+              photoId: PENDING_DELETE_PHOTO_ID,
+            }),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            showToast("Photo deleted", "success");
+            closeDeleteModal();
+            if (CURRENT_ALBUM_ID) loadAlbumAdmin(CURRENT_ALBUM_ID);
+          } else {
+            showToast(json.message || "Delete failed", "error");
+          }
+        } catch (err) {
+          showToast("Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      // =====================
+      // ADMIN - UPLOAD
+      // =====================
+      function previewUploadFiles(files) {
+        const preview = document.getElementById("upload-preview-list");
+        const btn = document.getElementById("btn-start-upload");
+        preview.innerHTML = "";
+        uploadFileCount = files.length;
+
+        if (files.length === 0) {
+          btn.classList.add("hidden");
+          return;
+        }
+
+        btn.classList.remove("hidden");
+        Array.from(files)
+          .slice(0, 8)
+          .forEach((f) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const div = document.createElement("div");
+              div.className =
+                "aspect-square bg-gray-900 rounded-lg overflow-hidden";
+              div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+              preview.appendChild(div);
+            };
+            reader.readAsDataURL(f);
+          });
+
+        if (files.length > 8) {
+          const more = document.createElement("div");
+          more.className =
+            "aspect-square bg-gray-900 rounded-lg flex items-center justify-center text-gray-400 text-xs font-bold";
+          more.innerText = `+${files.length - 8} more`;
+          preview.appendChild(more);
+        }
+      }
+
+      async function uploadFiles() {
+        if (!CURRENT_ALBUM_ID) {
+          // Need to save album first
+          showToast("Simpan album dulu sebelum upload", "error");
+          return;
+        }
+
+        const files = document.getElementById("admin-files").files;
+        if (files.length === 0) return showToast("Pilih gambar dulu", "error");
+
+        showLoading(true, `UPLOADING ${files.length}...`);
+        try {
+          const processed = await Promise.all(
+            Array.from(files).map(processImage),
+          );
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "upload",
+              password: SESSION_ADMIN_PASS,
+              albumId: CURRENT_ALBUM_ID,
+              images: processed,
+            }),
+          });
+          const json = await res.json();
+          if (json.status === "success") {
+            showToast(`${json.uploaded} gambar uploaded!`, "success");
+            document.getElementById("admin-files").value = "";
+            document.getElementById("upload-preview-list").innerHTML = "";
+            document.getElementById("btn-start-upload").classList.add("hidden");
+            if (CURRENT_ALBUM_ID) loadAlbumAdmin(CURRENT_ALBUM_ID);
+          } else {
+            showToast(json.message || "Upload failed", "error");
+          }
+        } catch (err) {
+          showToast("Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function adminLogout() {
+        SESSION_ADMIN_PASS = "";
+        CURRENT_ALBUM_ID = null;
+        CURRENT_ALBUM_META = null;
+        hideAlbumForm();
+        document.getElementById("view-admin").classList.add("hidden");
+        document.getElementById("view-admin-login").classList.remove("hidden");
+        document.getElementById("admin-pass-input").value = "";
+        document.body.classList.add("bg-gray-100");
+      }
+
+      // =====================
+      // ADMIN - NAV
+      // =====================
+      function showAdminLogin() {
+        document.getElementById("view-login").classList.add("hidden");
+        document.getElementById("view-admin-login").classList.remove("hidden");
+      }
+
+      function hideAdminLogin() {
+        document.getElementById("view-admin-login").classList.add("hidden");
+        document.getElementById("view-login").classList.remove("hidden");
+      }
+
+      // =====================
+      // PUBLIC GALLERY - ACCESS
+      // =====================
+      async function accessGallery(pinOverride) {
+        const pin = pinOverride || document.getElementById("input-pin").value.trim();
+        if (!pin) return showToast("Masukkan PIN", "error");
+        showLoading(true, "UNLOCKING...");
+        try {
+          const res = await fetch(
+            `${GAS_URL}?action=getGallery&pin=${encodeURIComponent(pin)}`,
+          );
+          const json = await res.json();
+          if (json.status === "success") {
+            CURRENT_IMAGES = json.photos;
+            CURRENT_ALBUM_META = json.album;
+            CURRENT_PIN = pin;
+
+            // Persist session
+            localStorage.setItem(SESSION_PIN_KEY, pin);
+
+            // Fallback: if album.musicUrl missing but root-level musicUrl exists, copy it
+            if ((!json.album || !json.album.musicUrl) && json.musicUrl) {
+              if (!json.album) {
+                json.album = {};
+              }
+              json.album.musicUrl = json.musicUrl;
+            }
+
+            document.getElementById("view-login").classList.add("hidden");
+            document.getElementById("view-gallery").classList.remove("hidden");
+
+            // Set title
+            document.getElementById("gallery-title").innerText = json.album
+              ? json.album.albumName
+              : "Album";
+
+            // Apply dynamic watermark
+            applyWatermarkSettings(json.album);
+
+            // Setup music if available
+            setupMusic(json.album);
+
+            // Initial render
+            if (VIEW_MODE === "slideshow") {
+              renderThumbnailStrip();
+              updateHeroImage(0);
+            } else {
+              renderMasonryGrid();
+            }
+          } else {
+            document.getElementById("error-msg").innerText = "PIN TIDAK SAH";
+            document.getElementById("error-msg").classList.remove("hidden");
+          }
+        } catch (err) {
+          showToast("Connection Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      async function refreshGallery() {
+        if (!CURRENT_PIN) return;
+        const prevIndex = CURRENT_INDEX;
+        const prevMode = VIEW_MODE;
+        showLoading(true, "REFRESHING...");
+        try {
+          const res = await fetch(
+            `${GAS_URL}?action=getGallery&pin=${encodeURIComponent(CURRENT_PIN)}`,
+          );
+          const json = await res.json();
+          if (json.status === "success") {
+            CURRENT_IMAGES = json.photos;
+            CURRENT_ALBUM_META = json.album;
+
+            // Reapply watermark
+            applyWatermarkSettings(json.album);
+
+            // Re-setup music
+            setupMusic(json.album);
+
+            // Restore title
+            document.getElementById("gallery-title").innerText = json.album
+              ? json.album.albumName
+              : "Album";
+
+            // Clamp index to valid range
+            if (prevIndex >= CURRENT_IMAGES.length) {
+              CURRENT_INDEX = Math.max(0, CURRENT_IMAGES.length - 1);
+            } else {
+              CURRENT_INDEX = prevIndex;
+            }
+
+            // Re-render current view mode
+            setViewMode(prevMode);
+
+            showToast("Album refreshed", "success");
+          } else {
+            showToast("Refresh failed", "error");
+          }
+        } catch (err) {
+          showToast("Connection Error", "error");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function applyWatermarkSettings(album) {
+        const line1 = document.getElementById("wm-line1");
+        const line2 = document.getElementById("wm-line2");
+        if (!line1 || !line2) return;
+        if (!album) {
+          // Legacy album without metadata - use defaults
+          line1.innerText = "SEMINAR BOARDS";
+          line2.innerText = "PG Bangi";
+          line1.style.fontFamily = "Inter";
+          line2.style.fontFamily = "Inter";
+          line1.style.fontSize = "16px";
+          line2.style.fontSize = "10px";
+          line1.style.color = "";
+          line2.style.color = "";
+          return;
+        }
+        line1.innerText = album.watermarkText1 || "SEMINAR BOARDS";
+        line2.innerText = album.watermarkText2 || "PG Bangi";
+        line1.style.fontFamily = album.watermarkFont || "Inter";
+        line2.style.fontFamily = album.watermarkFont || "Inter";
+        // Size scaling
+        const sizeScale =
+          album.watermarkSize === "small"
+            ? 0.7
+            : album.watermarkSize === "large"
+              ? 1.3
+              : 1;
+        line1.style.fontSize = `${16 * sizeScale}px`;
+        line2.style.fontSize = `${10 * sizeScale}px`;
+        if (album.watermarkColor && album.watermarkColor !== "#ffffff") {
+          line1.style.color = album.watermarkColor;
+          line2.style.color = album.watermarkColor;
+        } else {
+          line1.style.color = "";
+          line2.style.color = "";
+        }
+      }
+
+      function setupMusic(album) {
+        const musicCtrl = document.getElementById("music-control");
+        const audio = document.getElementById("bg-music");
+        const textEl = document.getElementById("text-music");
+        const btn = document.getElementById("btn-music-toggle");
+
+        // Reset music readiness state
+        MUSIC_READY = false;
+        MUSIC_LOADING = false;
+
+        // Reset audio state
+        audio.pause();
+        audio.src = "";
+        audio.onerror = null;
+        if (textEl) textEl.innerText = "Play Music";
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        // Safely get musicUrl
+        const musicUrl =
+          album && album.musicUrl ? String(album.musicUrl).trim() : "";
+
+        if (!musicUrl) {
+          musicCtrl.classList.add("hidden");
+          MUSIC_READY = false;
+          MUSIC_LOADING = false;
+          return;
+        }
+
+        const fileId = extractDriveFileId(musicUrl);
+        if (!fileId) {
+          musicCtrl.classList.add("hidden");
+          MUSIC_READY = false;
+          MUSIC_LOADING = false;
+          return;
+        }
+
+        // Show button immediately, mark as loading
+        musicCtrl.classList.remove("hidden");
+        MUSIC_READY = false;
+        MUSIC_LOADING = true;
+        if (textEl) textEl.innerText = "Loading Music...";
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.add("opacity-50", "cursor-not-allowed");
+        }
+
+        const proxiedUrl = `${GAS_URL}?action=streamMusic&id=${encodeURIComponent(fileId)}`;
+
+        // Fetch JSON with base64 audio, decode to Blob URL
+        fetch(proxiedUrl)
+          .then((res) => {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+          })
+          .then((json) => {
+            if (json.status !== "success")
+              throw new Error(json.message || "Stream failed");
+            const binary = atob(json.base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+              bytes[i] = binary.charCodeAt(i);
+            }
+            const audioBlob = new Blob([bytes], {
+              type: json.mimeType || "audio/mpeg",
+            });
+            const blobUrl = URL.createObjectURL(audioBlob);
+            audio.src = blobUrl;
+            audio.load();
+            MUSIC_READY = true;
+            MUSIC_LOADING = false;
+            if (textEl) textEl.innerText = "Play Music";
+            if (btn) {
+              btn.disabled = false;
+              btn.classList.remove("opacity-50", "cursor-not-allowed");
+            }
+          })
+          .catch((err) => {
+            console.error("Music load failed:", err);
+            MUSIC_READY = false;
+            MUSIC_LOADING = false;
+            if (textEl) textEl.innerText = "Music Error";
+            if (btn) {
+              btn.disabled = false;
+              btn.classList.remove("opacity-50", "cursor-not-allowed");
+            }
+            showToast("Music gagal dimuat. Sila upload MP3 semula.", "error");
+          });
+      }
+
+      function extractDriveFileId(url) {
+        if (!url) return null;
+        const trimmed = String(url).trim();
+        if (!trimmed) return null;
+
+        // Match /file/d/FILE_ID/view or /file/d/FILE_ID
+        const match1 = trimmed.match(
+          /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
+        );
+        if (match1) return match1[1];
+
+        // Match ?id=FILE_ID or &id=FILE_ID
+        const match2 = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (match2) return match2[1];
+
+        return null;
+      }
+
+      function normalizeMusicUrl(url) {
+        if (!url) return "";
+        const trimmed = String(url).trim();
+        if (!trimmed) return "";
+
+        const fileId = extractDriveFileId(trimmed);
+        if (fileId) {
+          return `${GAS_URL}?action=streamMusic&id=${encodeURIComponent(fileId)}`;
+        }
+
+        return trimmed;
+      }
+
+      function toggleMusic() {
+        const audio = document.getElementById("bg-music");
+        const icon = document.getElementById("icon-music");
+        const text = document.getElementById("text-music");
+
+        if (MUSIC_LOADING) {
+          showToast("Music masih loading. Cuba lagi sekejap.", "error");
+          return;
+        }
+        if (!MUSIC_READY) {
+          showToast("Music belum sedia. Cuba lagi sekejap.", "error");
+          return;
+        }
+
+        if (audio.paused) {
+          audio
+            .play()
+            .then(() => {
+              icon.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>';
+              text.innerText = "Pause Music";
+            })
+            .catch(() => {
+              showToast("Music belum sedia. Cuba lagi sekejap.", "info");
+            });
+        } else {
+          audio.pause();
+          icon.innerHTML =
+            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>';
+          text.innerText = "Play Music";
+        }
+      }
+
+      // =====================
+      // VIEW MODE TOGGLE
+      // =====================
+      function setViewMode(mode) {
+        VIEW_MODE = mode;
+        const btnSlideshow = document.getElementById("btn-view-slideshow");
+        const btnGrid = document.getElementById("btn-view-grid");
+        const viewSlideshow = document.getElementById("view-slideshow");
+        const viewGrid = document.getElementById("view-grid");
+        const thumbStrip = document.getElementById("thumb-strip");
+        const thumbBottom = document.getElementById("thumb-strip-container");
+
+        if (mode === "slideshow") {
+          btnSlideshow.className =
+            "px-4 py-1.5 rounded-full text-xs font-bold transition bg-blue-600 text-white";
+          btnGrid.className =
+            "px-4 py-1.5 rounded-full text-xs font-bold transition text-gray-400 hover:text-white";
+          viewSlideshow.classList.remove("hidden");
+          viewGrid.classList.add("hidden");
+          thumbStrip.classList.remove("hidden");
+          thumbBottom.classList.add("hidden");
+          renderThumbnailStrip();
+          if (CURRENT_IMAGES.length > 0) updateHeroImage(CURRENT_INDEX);
+        } else {
+          btnSlideshow.className =
+            "px-4 py-1.5 rounded-full text-xs font-bold transition text-gray-400 hover:text-white";
+          btnGrid.className =
+            "px-4 py-1.5 rounded-full text-xs font-bold transition bg-blue-600 text-white";
+          viewSlideshow.classList.add("hidden");
+          viewGrid.classList.remove("hidden");
+          thumbStrip.classList.add("hidden");
+          thumbBottom.classList.remove("hidden");
+          renderMasonryGrid();
+          renderThumbnailStrip();
+        }
+      }
+
+      // =====================
+      // GALLERY RENDER
+      // =====================
+      function renderThumbnailStrip() {
+        const grid = document.getElementById("gallery-grid");
+        const gridBottom = document.getElementById("gallery-grid-bottom");
+        grid.innerHTML = "";
+        gridBottom.innerHTML = "";
+
+        if (CURRENT_IMAGES.length === 0) {
+          document.getElementById("empty-state").classList.remove("hidden");
+          return;
+        }
+
+        document.getElementById("empty-state").classList.add("hidden");
+
+        CURRENT_IMAGES.forEach((img, idx) => {
+          const makeThumb = (container) => {
+            const thumb = document.createElement("img");
+            thumb.src = `https://drive.google.com/thumbnail?id=${img.fileId}&sz=w200`;
+            thumb.id = `thumb-${idx}`;
+            thumb.className =
+              "h-full w-auto object-cover rounded-lg cursor-pointer opacity-50 hover:opacity-100 transition duration-300 aspect-[4/3]";
+            thumb.onclick = () => {
+              if (VIEW_MODE === "grid") {
+                // In grid mode, clicking thumb goes to slideshow at that index
+                VIEW_MODE = "slideshow";
+                setViewMode("slideshow");
+              }
+              updateHeroImage(idx);
+              stopSlideshow();
+            };
+            container.appendChild(thumb);
+          };
+          makeThumb(grid);
+          makeThumb(gridBottom);
+        });
+      }
+
+      function renderMasonryGrid() {
+        const container = document.getElementById("masonry-container");
+        container.innerHTML = "";
+
+        if (CURRENT_IMAGES.length === 0) {
+          document.getElementById("empty-state").classList.remove("hidden");
+          return;
+        }
+
+        document.getElementById("empty-state").classList.add("hidden");
+
+        CURRENT_IMAGES.forEach((img, idx) => {
+          const div = document.createElement("div");
+          div.className = "masonry-item";
+          const imgEl = document.createElement("img");
+          imgEl.src = `https://drive.google.com/thumbnail?id=${img.fileId}&sz=w600`;
+          imgEl.loading = "lazy";
+          imgEl.onclick = () => {
+            CURRENT_INDEX = idx;
+            openModalCurrent();
+          };
+          div.appendChild(imgEl);
+          container.appendChild(div);
+        });
+      }
+
+      // =====================
+      // RANDOM TRANSITION EFFECTS
+      // =====================
+      const transitionEffects = ['effect-dissolve', 'effect-zoom-in', 'effect-zoom-out', 'effect-slide-down', 'effect-box'];
+
+      function applyRandomTransition(imageElement) {
+        if (!imageElement) return;
+        transitionEffects.forEach(effect => imageElement.classList.remove(effect));
+        imageElement.classList.remove('slide-active');
+        const randomEffect = transitionEffects[Math.floor(Math.random() * transitionEffects.length)];
+        void imageElement.offsetWidth; // Wajib: Trick browser untuk restart animasi
+        imageElement.classList.add('slide-active', randomEffect);
+      }
+
+      function updateHeroImage(index) {
+        if (index < 0) index = CURRENT_IMAGES.length - 1;
+        if (index >= CURRENT_IMAGES.length) index = 0;
+        CURRENT_INDEX = index;
+
+        document.getElementById("counter-text").innerText =
+          `${CURRENT_INDEX + 1} / ${CURRENT_IMAGES.length}`;
+
+        const imgData = CURRENT_IMAGES[index];
+        const highResUrl = `https://drive.google.com/thumbnail?id=${imgData.fileId}&sz=w2000`;
+        const heroImg = document.getElementById("hero-img");
+
+        heroImg.style.opacity = "0";
+        const tempImg = new Image();
+        tempImg.src = highResUrl;
+        tempImg.onload = () => {
+          heroImg.src = highResUrl;
+          heroImg.style.opacity = "1";
+          
+          // KOD DITAMBAH DI SINI: Panggil efek rawak setiap kali gambar siap di-load
+          applyRandomTransition(heroImg);
+        };
+
+        document
+          .querySelectorAll("#gallery-grid img, #gallery-grid-bottom img")
+          .forEach((el) => el.classList.remove("active-thumb", "opacity-100"));
+        const activeThumb = document.getElementById(`thumb-${index}`);
+        if (activeThumb) {
+          activeThumb.classList.add("active-thumb");
+          activeThumb.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+
+        if (!document.getElementById("modal").classList.contains("hidden")) {
+          document.getElementById("modal-img").src = highResUrl;
+        }
+      }
+
+      function changeSlide(dir) {
+        updateHeroImage(CURRENT_INDEX + dir);
+      }
+
+      function toggleSlideshow() {
+        if (SLIDESHOW_INTERVAL) stopSlideshow();
+        else {
+          document.getElementById("icon-play").innerHTML =
+            `<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />`;
+          document.getElementById("text-slideshow").innerText = "STOP";
+          SLIDESHOW_INTERVAL = setInterval(() => changeSlide(1), 3000);
+        }
+      }
+
+      function stopSlideshow() {
+        clearInterval(SLIDESHOW_INTERVAL);
+        SLIDESHOW_INTERVAL = null;
+        document.getElementById("icon-play").innerHTML =
+          `<path d="M4 4l12 6-12 6z"/>`;
+        document.getElementById("text-slideshow").innerText = "AUTO PLAY";
+      }
+
+      // =====================
+      // SMART DOWNLOAD WITH DYNAMIC WATERMARK
+      // =====================
+      async function downloadWithWatermark() {
+        showLoading(true, "PROCESSING...");
+        const imgData = CURRENT_IMAGES[CURRENT_INDEX];
+        const imgUrl = `https://drive.google.com/thumbnail?id=${imgData.fileId}&sz=w2000`;
+
+        try {
+          const response = await fetch(imgUrl);
+          const blob = await response.blob();
+          const objectURL = URL.createObjectURL(blob);
+
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+          img.src = objectURL;
+
+          await new Promise((r) => (img.onload = r));
+
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+          // Use dynamic watermark from album metadata
+          const album = CURRENT_ALBUM_META || {};
+          const font1 = album.watermarkFont || "Inter";
+          const sizeScale =
+            album.watermarkSize === "small"
+              ? 0.7
+              : album.watermarkSize === "large"
+                ? 1.3
+                : 1;
+          const fontSize1 = Math.floor(img.width * 0.04 * sizeScale);
+          const fontSize2 = Math.floor(img.width * 0.02 * sizeScale);
+          const wmColor = album.watermarkColor || "#ffffff";
+
+          ctx.textAlign = "right";
+          ctx.shadowColor = "rgba(0,0,0,0.5)";
+          ctx.shadowBlur = 4;
+
+          const text1 = album.watermarkText1 || "SEMINAR BOARDS";
+          const text2 = album.watermarkText2 || "PG Bangi | 13 Jun 2026";
+
+          ctx.font = `800 ${fontSize1}px ${font1}, sans-serif`;
+          ctx.fillStyle = wmColor + "CC";
+          ctx.fillText(text1, img.width - 40, img.height - (fontSize2 + 60));
+
+          ctx.font = `400 ${fontSize2}px ${font1}, sans-serif`;
+          ctx.fillStyle = wmColor + "99";
+          ctx.fillText(text2, img.width - 40, img.height - 40);
+
+          const link = document.createElement("a");
+          link.download = `PMV_${imgData.fileName}`;
+          link.href = canvas.toDataURL("image/jpeg", 0.9);
+          link.click();
+          showToast("Downloaded with Watermark!", "success");
+          URL.revokeObjectURL(objectURL);
+        } catch (err) {
+          console.warn(
+            "Watermark failed due to CORS, downloading original.",
+            err,
+          );
+          const link = document.createElement("a");
+          link.href = `https://drive.google.com/uc?export=download&id=${imgData.fileId}`;
+          link.download = imgData.fileName;
+          link.target = "_blank";
+          link.click();
+          showToast("Saved Original (Watermark skipped)", "success");
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      // =====================
+      // HELPERS
+      // =====================
+      function openModalCurrent() {
+        stopSlideshow();
+        const imgData = CURRENT_IMAGES[CURRENT_INDEX];
+        const highResUrl = `https://drive.google.com/thumbnail?id=${imgData.fileId}&sz=w2000`;
+        document.getElementById("modal-img").src = highResUrl;
+        document.getElementById("modal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+      }
+
+      function logout() {
+        stopSlideshow();
+        const audio = document.getElementById("bg-music");
+        audio.pause();
+        audio.src = "";
+        CURRENT_IMAGES = [];
+        CURRENT_ALBUM_META = null;
+        CURRENT_PIN = null;
+        VIEW_MODE = "slideshow";
+        localStorage.removeItem(SESSION_PIN_KEY);
+        location.reload();
+      }
+
+      function showLoading(show, txt) {
+        document.getElementById("loading").classList.toggle("hidden", !show);
+        if (txt) document.getElementById("loading-text").innerText = txt;
+      }
+
+      function showToast(msg, type) {
+        const t = document.getElementById("toast");
+        t.innerText = msg;
+        t.classList.remove("hidden");
+        t.className = `fixed top-5 right-5 z-50 px-6 py-3 rounded shadow-lg text-white font-bold transition transform duration-300 ${type === "error" ? "bg-red-600" : "bg-blue-600"}`;
+        setTimeout(() => t.classList.add("hidden"), 3000);
+      }
+
+      function processImage(file) {
+        return new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+              const cvs = document.createElement("canvas");
+              const max = 1920;
+              const scale = img.width > max ? max / img.width : 1;
+              cvs.width = img.width > max ? max : img.width;
+              cvs.height = img.width > max ? img.height * scale : img.height;
+              cvs.getContext("2d").drawImage(img, 0, 0, cvs.width, cvs.height);
+              res({
+                name: file.name,
+                type: "image/jpeg",
+                data: cvs.toDataURL("image/jpeg", 0.8),
+              });
+            };
+          };
+        });
+      }
+      
+      // =====================
+      // DATA VIDEO & RENDER FUNCTION
+      // =====================
+      // Di sini bahagian Admin akan masukkan data. Buat masa ni kau boleh test tukar ID YouTube di bawah:
+      let CURRENT_VIDEOS = [
+        { id: "2qrYtqcACRM", title: "Yes-Yes-Yes" },
+        { id: "gTaqWPV8Uz8", title: "Pesanan Tuan Shuk Untuk Peserta" },
+        { id: "HAROfpA23vs", title: "Demo Guna Boards 1" },
+        { id: "ss1TrE0DYKc", title: "Demo Guna Boards 2" },
+        { id: "JvcvvNvRjTk", title: "Thinker Table - Guide Ke Lokasi" },
+        { id: "J5wv-vOQvdA", title: "Thinker Table - Kemudahan Disediakan" },
+        { id: "cG_zWYqtG0k", title: "Video Tuan Shukri - Panduan Simpan Emas" },
+        { id: "CNvApMLM3c0", title: "Video Tuan Shukri - Cara Beli Emas Gap" }
+         
+      ];
+
+      function renderVideoGrid() {
+        const videoGrid = document.getElementById("gallery-video-grid");
+        if (!videoGrid) return;
+        
+        videoGrid.innerHTML = ""; // Bersihkan grid lama
+
+        if (CURRENT_VIDEOS.length === 0) {
+          videoGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-8">Tiada video buat masa ini.</div>`;
+          return;
+        }
+
+        CURRENT_VIDEOS.forEach((video) => {
+          const videoBox = document.createElement("div");
+          videoBox.className = "aspect-video rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-black";
+          videoBox.innerHTML = `
+            <iframe class="w-full h-full" 
+                    src="https://www.youtube.com/embed/${video.id}" 
+                    title="${video.title}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>`;
+          videoGrid.appendChild(videoBox);
+        });
+      }
+
+      // ==========================================
+      // SISTEM PENGURUSAN VIDEO (ADMIN & USER)
+      // ==========================================
+      
+      // Ambil data video dari localStorage
+       [
+        { id: "gTaqWPV8Uz8", title: "Default Video 1" }
+      ];
+
+      // Fungsi ekstrak ID dari link YouTube
+      function extractYouTubeId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      }
+
+      // Paparkan Grid Video untuk Pengguna
+      function renderVideoGrid() {
+        const videoGrid = document.getElementById("gallery-video-grid");
+        if (!videoGrid) return;
+        videoGrid.innerHTML = "";
+
+        if (CURRENT_VIDEOS.length === 0) {
+          videoGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-12 text-sm">Tiada video dalam galeri buat masa ini.</div>`;
+          return;
+        }
+
+        CURRENT_VIDEOS.forEach((video) => {
+          const videoBox = document.createElement("div");
+          videoBox.className = "aspect-video rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-black";
+          videoBox.innerHTML = `
+            <iframe class="w-full h-full" 
+                    src="https://www.youtube.com/embed/${video.id}" 
+                    title="${video.title}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>`;
+          videoGrid.appendChild(videoBox);
+        });
+      }
+
+      // Paparkan Senarai Video di Panel Admin (Untuk tujuan delete)
+      function renderAdminVideoList() {
+        const listContainer = document.getElementById("admin-video-list");
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
+
+        CURRENT_VIDEOS.forEach((video, index) => {
+          const btn = document.createElement("button");
+          btn.className = "px-3 py-1 bg-red-950/40 hover:bg-red-900 text-red-400 text-[11px] rounded-full border border-red-900/50 transition";
+          btn.innerHTML = `🗑️ ${video.title}`;
+          btn.onclick = () => deleteVideo(index);
+          listContainer.appendChild(btn);
+        });
+      }
+
+      // Fungsi Tambah Video (Oleh Admin)
+      function addVideoByAdmin() {
+        const titleInput = document.getElementById("admin-video-title");
+        const urlInput = document.getElementById("admin-video-url");
+        
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+        const videoId = extractYouTubeId(url);
+
+        if (!title || !videoId) {
+          alert("Sila masukkan tajuk dan URL YouTube yang sah!");
+          return;
+        }
+
+        CURRENT_VIDEOS.push({ id: videoId, title: title });
+        localStorage.setItem("gallery_videos", JSON.stringify(CURRENT_VIDEOS));
+
+        titleInput.value = "";
+        urlInput.value = "";
+        renderVideoGrid();
+        renderAdminVideoList();
+        alert("Video berjaya ditambah!");
+      }
+
+      // Fungsi Padam Video
+      function deleteVideo(index) {
+        if (confirm("Adakah anda pasti mahu memadam video ini?")) {
+          CURRENT_VIDEOS.splice(index, 1);
+          localStorage.setItem("gallery_videos", JSON.stringify(CURRENT_VIDEOS));
+          renderVideoGrid();
+          renderAdminVideoList();
+        }
+      }
+
+      // =====================
+      // MAIN GALLERY TAB TOGGLE (GAMBAR VS VIDEO)
+      // =====================
+      function switchMainGallery(type) {
+        const btnGambar = document.getElementById("tab-btn-gambar");
+        const btnVideo = document.getElementById("tab-btn-video");
+        const wrapperGambar = document.getElementById("wrapper-galeri-gambar");
+        const wrapperVideo = document.getElementById("wrapper-galeri-video");
+
+        if (type === "gambar") {
+          btnGambar.className = "px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-blue-600 text-white shadow-lg";
+          btnVideo.className = "px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-gray-800 text-gray-400 hover:text-white border border-gray-700 shadow-lg";
+          wrapperGambar.classList.remove("hidden");
+          wrapperVideo.classList.add("hidden");
+        } else {
+          btnVideo.className = "px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-blue-600 text-white shadow-lg";
+          btnGambar.className = "px-6 py-2 rounded-full text-sm font-bold transition duration-300 bg-gray-800 text-gray-400 hover:text-white border border-gray-700 shadow-lg";
+          wrapperVideo.classList.remove("hidden");
+          wrapperGambar.classList.add("hidden");
+
+          renderVideoGrid();
+
+          if (typeof stopSlideshow === 'function') {
+            stopSlideshow();
+          }
+        }
+      }
+    </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. KITA TUKAR SASARAN KEPADA ID ADMIN PANEL
+    const adminGrid = document.getElementById('admin-photo-grid');
+
+    if (adminGrid) {
+        new Sortable(adminGrid, {
+            animation: 150,
+            ghostClass: 'opacity-30',
+            forceFallback: true, // Paksa browser abaikan fungsi drag asal
+            
+            // 2. Fungsi berjalan lepas admin siap susun gambar
+            onEnd: function () {
+                let urutanBaru = [];
+                const semuaGambar = adminGrid.children;
+                
+                // Tunjuk status sedang simpan di label count
+                const labelCount = document.getElementById("photo-count-label");
+                if(labelCount) labelCount.innerText = "Menyimpan...";
+                
+                // Ambil susunan baru
+                for (let i = 0; i < semuaGambar.length; i++) {
+                    // Curi ID gambar dari butang delete yang dijana oleh renderAdminPhotos()
+                    let btn = semuaGambar[i].querySelector('button');
+                    let imgId = "";
+                    if (btn) {
+                        let onclickAttr = btn.getAttribute('onclick');
+                        let match = onclickAttr.match(/'([^']+)'/);
+                        if (match) imgId = match[1]; // Dapat ID gambar sebenar dari database
+                    }
+                    
+                    urutanBaru.push({
+                        id: imgId,
+                        kedudukan_baru: i + 1
+                    });
+                }
+                
+                // 3. Hantar ke Google Apps Script berserta Password & ID Album
+                if (typeof GAS_URL !== 'undefined' && CURRENT_ALBUM_ID) {
+                    fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+        action: 'simpan_susunan',
+        password: SESSION_ADMIN_PASS,
+        albumId: CURRENT_ALBUM_ID,
+        data: urutanBaru
+    })
+})
+.then(res => res.json())
+.then(data => {
+                        console.log('Susunan baru berjaya dihantar ke GAS!');
+                        if(labelCount) labelCount.innerText = "Tersimpan!";
+                        setTimeout(() => {
+                            if(labelCount) labelCount.innerText = semuaGambar.length + " photos";
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Ralat simpanan:', err);
+                        if(labelCount) labelCount.innerText = "Gagal Simpan";
+                    });
+                }
+            }
+        });
+    }
+});
+</script>
+  </body>
+</html>
