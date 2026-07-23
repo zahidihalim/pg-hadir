@@ -16,7 +16,7 @@
 //   7. Protected write actions with consistent AUTH_REQUIRED response
 //   8. adminLogout action
 //   9. EVENT_TIME ↔ EVENT_START_TIME compatibility alias
-//  10. 28 approved V1 settings keys (EVENT_TIME is alias only, not separate key)
+//  10. 29 approved V1 settings keys (EVENT_TIME is alias only, not separate key)
 //
 // PUBLIC ACTION ABUSE RISKS (documented, not mitigated in V1):
 //   - search:       participant enumeration via brute-force keyword search
@@ -36,7 +36,7 @@ const SETTINGS_SHEET = "Settings";
 const WISHLIST_SHEET = "Wishlist";
 
 // ===========================================================================
-// CONSTANTS — Approved V1 Settings Keys (28 canonical + 1 legacy alias)
+// CONSTANTS — Approved V1 Settings Keys (29 canonical + 1 legacy alias)
 // ===========================================================================
 const APPROVED_SETTINGS_KEYS = [
   // Event
@@ -45,7 +45,7 @@ const APPROVED_SETTINGS_KEYS = [
   "EVENT_VENUE", "ORGANISER_NAME", "PARTICIPANT_QUOTA",
   // Branding
   "POSTER_URL", "PRIMARY_COLOR", "SECONDARY_COLOR",
-  "MARKETING_COPY", "BENEFITS_JSON", "SPEAKER_INFO",
+  "MARKETING_COPY", "BENEFITS_JSON", "SCHEDULE_JSON", "SPEAKER_INFO",
   "REGISTRATION_URL", "REGISTRATION_CTA_TEXT",
   // Attendance
   "OPEN_BEFORE_HOURS", "SYSTEM_ENABLED", "WISHLIST_ENABLED",
@@ -174,13 +174,102 @@ function getColumnMap() {
 function clearColumnMapCache() { _cachedColMap = null; }
 
 // ===========================================================================
+// HELPER — Header analysis for detailed validation reporting
+// Returns full findings: found headers (source name + col), missing fields,
+// duplicates. Does NOT throw — returns structured object for reporting.
+// ===========================================================================
+function analyzeHeaders() {
+  const logicalDefs = {
+    NAME:        { aliases: ["nama", "nama penuh", "name", "full name"] },
+    PHONE:       { aliases: ["no telefon", "nombor telefon", "phone", "phone number", "no tel", "telefon"] },
+    EMAIL:       { aliases: ["email", "emel", "e-mail", "e mail"] },
+    PG_CODE:     { aliases: ["pg code", "pgcode", "agent code", "agent id", "kod pg"] },
+    WA_STATUS:   { aliases: ["wa status", "whatsapp status", "status wa", "status whatsapp"] },
+    REPLACEMENT: { aliases: ["replacement", "gantian", "pengganti", "replacement data", "data gantian"] }
+  };
+
+  const result = {
+    found: [],       // { logical, source, column }
+    missing: [],     // [logical field name]
+    duplicates: [],  // { logical, matches: [{source, column}] }
+    errors: [],      // string messages
+    columnMap: null  // backward-compat { name: idx, phone: idx, ... }
+  };
+
+  try {
+    const ss = getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(PARTICIPANT_SHEET);
+    if (!sheet) {
+      result.errors.push("Sheet '" + PARTICIPANT_SHEET + "' not found — cannot analyze headers.");
+      return result;
+    }
+
+    const rawHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
+    const headers = rawHeaders.map(h => normalizeHeader(h));
+
+    const logicalFields = {};
+    for (const [field, config] of Object.entries(logicalDefs)) {
+      logicalFields[field] = { found: [], aliases: config.aliases };
+    }
+
+    // Scan each header column against all logical field definitions
+    for (let i = 0; i < headers.length; i++) {
+      const normalized = headers[i];
+      if (!normalized) continue;
+
+      for (const [field, lf] of Object.entries(logicalFields)) {
+        if (lf.aliases.some(alias => normalized === alias || normalized.includes(alias))) {
+          lf.found.push({ source: String(rawHeaders[i]).trim(), column: i + 1 });
+        }
+      }
+    }
+
+    // Build findings
+    const columnMap = {};
+
+    for (const [field, lf] of Object.entries(logicalFields)) {
+      if (lf.found.length === 0) {
+        result.missing.push(field);
+      } else if (lf.found.length === 1) {
+        const f = lf.found[0];
+        result.found.push({ logical: field, source: f.source, column: f.column });
+
+        // Build column map (0-indexed for internal use)
+        const key = field === "PG_CODE" ? "pgcode" :
+                    field === "WA_STATUS" ? "wastatus" : field.toLowerCase();
+        columnMap[key] = f.column - 1;
+      } else {
+        // Multiple columns matched — duplicate detection
+        result.duplicates.push({
+          logical: field,
+          matches: lf.found.map(f => ({ source: f.source, column: f.column }))
+        });
+        // Still report each match in found for visibility
+        lf.found.forEach(f => {
+          result.found.push({ logical: field, source: f.source, column: f.column });
+        });
+      }
+    }
+
+    if (result.duplicates.length === 0 && result.missing.length === 0) {
+      result.columnMap = columnMap;
+    }
+
+  } catch (e) {
+    result.errors.push("Header analysis failed: " + e.message.split("\n")[0]);
+  }
+
+  return result;
+}
+
+// ===========================================================================
 // HELPER — Sheet & system validation (CTO Requirement #3)
 // Token-protected: requires admin token (CTO Correction #2)
 // ===========================================================================
 function validateSetup(token) {
   if (!validateAdminToken(token)) return authRequiredResponse();
 
-  const result = { success: true, sheets: {}, columns: null, warnings: [], errors: [] };
+  const result = { success: true, sheets: {}, columns: null, headerFindings: null, warnings: [], errors: [] };
 
   try {
     const ss = getActiveSpreadsheet();
@@ -192,10 +281,25 @@ function validateSetup(token) {
       if (!sheet) result.errors.push("Missing sheet: " + name);
     });
 
-    try {
-      result.columns = getParticipantColumnMap();
-    } catch (colErr) {
-      result.errors.push(colErr.message);
+    // Detailed header analysis (does NOT throw — reports all findings)
+    if (result.sheets[PARTICIPANT_SHEET]) {
+      const hf = analyzeHeaders();
+      result.headerFindings = hf;
+      result.columns = hf.columnMap; // backward compat — null if any field missing
+
+      // Report missing headers individually (NOT a single combined error)
+      hf.missing.forEach(field => {
+        result.errors.push("Missing header: " + field);
+      });
+
+      // Report duplicate matches
+      hf.duplicates.forEach(dup => {
+        const cols = dup.matches.map(m => "col " + m.column + " (\"" + m.source + "\")").join(", ");
+        result.errors.push("Duplicate header '" + dup.logical + "' matched at: " + cols);
+      });
+
+      // Report analysis-level errors (e.g. sheet access failure)
+      hf.errors.forEach(e => result.errors.push(e));
     }
 
     if (result.sheets[SETTINGS_SHEET]) {
@@ -212,11 +316,9 @@ function validateSetup(token) {
     }
 
     // NEVER expose spreadsheet ID, admin details, or internal state
-    // result only contains tab presence (boolean) and column indices (numbers)
 
   } catch (e) {
     result.success = false;
-    // Controlled error — no stack trace exposed
     result.errors.push("Setup validation failed: " + e.message.split("\n")[0]);
   }
 

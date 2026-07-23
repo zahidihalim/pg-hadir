@@ -646,8 +646,32 @@
           ).join('');
         }
         
-        // Render columns
-        if (data.columns) {
+        // Render columns — prefer detailed headerFindings, fall back to legacy columns
+        if (data.headerFindings && data.headerFindings.found) {
+          // V1 enhanced: show each recognised source header with logical name and column
+          const foundHtml = data.headerFindings.found.map(f =>
+            `<div class="flex items-center gap-2 bg-green-50 rounded-lg p-2 text-sm">
+              <span class="text-green-600 font-bold">✓</span>
+              <span class="font-mono text-slate-600">[${f.logical}]</span>
+              <span class="text-slate-400">←</span>
+              <span class="font-mono font-bold">"${f.source}"</span>
+              <span class="text-slate-400 text-xs">col ${f.column}</span>
+            </div>`
+          ).join('');
+          
+          const missingHtml = data.headerFindings.missing && data.headerFindings.missing.length > 0
+            ? data.headerFindings.missing.map(m =>
+                `<div class="flex items-center gap-2 bg-red-50 rounded-lg p-2 text-sm">
+                  <span class="text-red-500 font-bold">✗</span>
+                  <span class="font-mono text-red-600">[${m}]</span>
+                  <span class="text-red-400 text-xs">missing</span>
+                </div>`
+              ).join('')
+            : '';
+          
+          colsDiv.innerHTML = foundHtml + missingHtml;
+        } else if (data.columns) {
+          // Legacy fallback: simple column indices
           colsDiv.innerHTML = "Headers: " + Object.entries(data.columns).map(([k, v]) => 
             `<span class="bg-slate-100 px-2 py-0.5 rounded font-mono">${k}=col${v}</span>`
           ).join(' ');
