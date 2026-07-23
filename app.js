@@ -58,8 +58,8 @@
         const container = document.getElementById("participantResult"); 
         container.innerHTML = "";
         
-        // Link WhatsApp Group yang Tuan berikan
-        const waLink = "https://chat.whatsapp.com/IDHqogXTdvkCdd3XvTOg5e"; 
+        // Link WhatsApp Group dari SuperAdmin settings
+        const waLink = getWhatsAppLink();
 
         data.data.forEach(participant => {
           let statusTag = "";
@@ -79,8 +79,10 @@
               ? `<button onclick='submitAttendance(${JSON.stringify(participant)})' class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 transition">SAYA HADIR</button>`
               : `<div class="bg-yellow-100 border border-yellow-400 text-yellow-800 p-3 rounded-xl text-xs font-semibold text-center mb-2">Daftar Kehadiran mulai dibuka<br>pada: <b>${participant.attendanceStartDisplay}</b></div>`;
 
-            // UI Butang WhatsApp
-            let btnWA = `<a href="${waLink}" target="_blank" class="w-full block text-center bg-slate-900 text-white py-3 rounded-xl font-bold shadow-md hover:bg-slate-800 transition mt-2">Untuk Update Terkini,<br>sertai Group WhatsApp 💬</a>`;
+            // UI Butang WhatsApp — hanya jika link group ditetapkan
+            let btnWA = waLink
+              ? `<a href="${waLink}" target="_blank" class="w-full block text-center bg-slate-900 text-white py-3 rounded-xl font-bold shadow-md hover:bg-slate-800 transition mt-2">Untuk Update Terkini,<br>sertai Group WhatsApp 💬</a>`
+              : '';
 
             // Gabungkan kedua-dua butang
             actionHTML = `<div class="mt-4">${btnHadir}${btnWA}</div>`;
@@ -345,7 +347,11 @@
         let wishHtml = "";
         if (data.wishlist && data.wishlist.length > 0) {
           data.wishlist.forEach(w => {
-            const msg = encodeURIComponent(`Salam Tuan/Puan *${w.nama}*.\n\nKami dapati ada slot kosong untuk BootCamp BOARDS! Anda dijemput menyertai group rasmi melalui link ini:\nhttps://chat.whatsapp.com/IDHqogXTdvkCdd3XvTOg5e`);
+            const waLink = getWhatsAppLink();
+            const msg = encodeURIComponent(buildWhatsAppMessage(w.nama));
+            const waButton = waLink
+              ? `<a href="https://wa.me/${formatPhoneNumber(w.phone)}?text=${msg}" target="_blank" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition">Hubungi WA 💬</a>`
+              : `<span class="bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold">Sila tetapkan WhatsApp Group Link di Settings</span>`;
             wishHtml += `
               <tr class="hover:bg-slate-50 transition text-slate-700">
                 <td class="p-4 text-xs text-slate-400">${w.timestamp}</td>
@@ -353,7 +359,7 @@
                 <td class="p-4">${w.phone}</td>
                 <td class="p-4 text-slate-500">${w.email || '-'}</td>
                 <td class="p-4 text-xs font-bold">${w.pgcode || '-'}</td>
-                <td class="p-4 text-center"><a href="https://wa.me/${formatPhoneNumber(w.phone)}?text=${msg}" target="_blank" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-green-600 hover:text-white transition">Hubungi WA 💬</a></td>
+                <td class="p-4 text-center">${waButton}</td>
               </tr>`;
           });
           document.getElementById("wishlistTable").innerHTML = wishHtml;
@@ -464,9 +470,31 @@
       return cleaned;
     }
 
+    function getWhatsAppLink() {
+      return window.dynamicWhatsAppLink || '';
+    }
+
+    function buildWhatsAppMessage(nama) {
+      const link = getWhatsAppLink();
+      const eventName = window.dynamicEventName || window.dynamicEventShort || '';
+      const template = window.dynamicWhatsAppMsg || '';
+      if (template) {
+        return template
+          .replaceAll('{nama}', nama)
+          .replaceAll('{event}', eventName)
+          .replaceAll('{link}', link);
+      }
+      return `Salam Tuan/Puan *${nama}*.\n\nTerima kasih kerana mendaftar. Anda dijemput menyertai group${eventName ? ' ' + eventName : ''} melalui pautan di bawah:\n\n👉 ${link}\n\nJumpa di sana!`;
+    }
+
     async function sendBulkWA() {
       const selected = document.querySelectorAll(".wa-checkbox:checked");
       if (selected.length === 0) return Swal.fire("Pilih Peserta", "Sila tick sekurang-kurangnya satu peserta.", "warning");
+
+      const groupLink = getWhatsAppLink();
+      if (!groupLink) {
+        return Swal.fire("Tetapan Diperlukan", "Sila tetapkan WhatsApp Group Link di Settings (tab Comms) terlebih dahulu.", "warning");
+      }
 
       const confirm = await Swal.fire({
         title: `Hantar ${selected.length} Jemputan?`, text: "WhatsApp akan dibuka bergilir. Klik 'Send' di setiap tetingkap.",
@@ -474,14 +502,12 @@
       });
       if (!confirm.isConfirmed) return;
 
-      const groupLink = "https://chat.whatsapp.com/IDHqogXTdvkCdd3XvTOg5e";
-
       for (let i = 0; i < selected.length; i++) {
         const box = selected[i];
         const rawPhone = box.value; const nama = box.getAttribute("data-nama"); const pgcode = box.getAttribute("data-pgcode");
         const formattedPhone = formatPhoneNumber(rawPhone);
         
-        const message = `Salam Tuan/Puan *${nama}*.\n\nTerima kasih kerana mendaftar. Anda dijemput untuk menyertai group rasmi BootCamp BOARDS melalui pautan di bawah:\n\n👉 ${groupLink}\n\nJumpa di sana!`;
+        const message = buildWhatsAppMessage(nama);
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
 
         try {
