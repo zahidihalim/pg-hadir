@@ -34,9 +34,10 @@
         // LOGIK 1: JIKA TIADA NAMA & KUOTA PENUH (AUTO-PROMPT WISHLIST)
         // ------------------------------------------------------------------
         if (!data.success) {
+          const eventLabel = (window.currentSettings && (window.currentSettings.EVENT_NAME || window.currentSettings.EVENT_SHORT_NAME)) || 'acara';
           const confirmWishlist = await Swal.fire({
             title: 'Harap Maaf, Kuota Penuh!',
-            html: '<p class="text-sm">Rekod anda tidak dijumpai dan tempat duduk BootCamp telah penuh.</p><br><p class="text-sm font-bold text-slate-800">Adakah anda ingin memasukkan nama ke dalam Senarai Menunggu (Wishlist)?</p>',
+            html: '<p class="text-sm">Rekod anda tidak dijumpai dan tempat duduk ' + escHtml(eventLabel) + ' telah penuh.</p><br><p class="text-sm font-bold text-slate-800">Adakah anda ingin memasukkan nama ke dalam Senarai Menunggu (Wishlist)?</p>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d4a017', // Warna Gold
@@ -580,11 +581,15 @@
         const response = await fetch(`${API_URL}?action=getConfig`);
         const data = await response.json();
         
-        if (data.success && data.settings.EVENT_DATE && data.settings.EVENT_TIME) {
-          startCountdown(data.settings.EVENT_DATE, data.settings.EVENT_TIME);
+        if (data.success && data.settings) {
+          window.currentSettings = data.settings;
+          applyPublicSettings(data.settings);
+          if (data.settings.EVENT_DATE && (data.settings.EVENT_START_TIME || data.settings.EVENT_TIME)) {
+            startCountdown(data.settings.EVENT_DATE, data.settings.EVENT_START_TIME || data.settings.EVENT_TIME);
+          }
         }
       } catch (e) {
-        console.error("Gagal memuatkan tetapan pemasa:", e);
+        console.error("Gagal memuatkan tetapan acara:", e);
       }
     }
 
@@ -838,7 +843,9 @@
         const response = await fetch(API_URL + '?action=getConfig');
         const data = await response.json();
         if (data.success && data.settings) {
+          window.currentSettings = data.settings;
           populateAllSettings(data.settings);
+          applyPublicSettings(data.settings);
           showSettingsStatus('Settings loaded', 'text-green-600');
         } else {
           showSettingsStatus('Failed to load settings: ' + (data.message || 'unknown'), 'text-red-600');
@@ -873,7 +880,9 @@
           } else {
             showSettingsStatus(msg, 'text-green-600');
           }
-          // Refresh public page
+          // Apply to public page immediately, then confirm persistence
+          window.currentSettings = settings;
+          applyPublicSettings(settings);
           loadAllSettings();
         } else {
           showSettingsStatus('Error: ' + (result.message || 'Save failed'), 'text-red-600');
@@ -891,27 +900,12 @@
       el.classList.remove('hidden');
     }
 
-    // Dynamic public page rendering
     function applyPublicSettings(s) {
       if (!s) return;
-      
-      if (s.EVENT_NAME) { const el = document.querySelector('#userPage + * h1, header h1, .gold-gradient h1'); /* update header */ }
-      // Update branding colors
-      if (s.PRIMARY_COLOR && s.SECONDARY_COLOR) {
-        const style = document.getElementById('dynamic-brand-style') || (() => { const st = document.createElement('style'); st.id = 'dynamic-brand-style'; document.head.appendChild(st); return st; })();
-        style.textContent = `.gold-gradient { background: linear-gradient(135deg, ${s.PRIMARY_COLOR}, ${s.SECONDARY_COLOR}) !important; }`;
-      }
-      // Update poster
-      if (s.POSTER_URL) {
-        const posters = document.querySelectorAll('img[src*="boards.jpeg"], img[alt*="Poster"]');
-        posters.forEach(img => { img.src = s.POSTER_URL; img.alt = s.EVENT_NAME || s.EVENT_SHORT_NAME || ''; });
-      }
-      // Update footer
-      if (s.FOOTER_TEXT) {
-        const footerOrg = document.querySelector('footer p:first-child');
-        if (footerOrg) footerOrg.innerHTML = '&copy; <span id="currentYear"></span> ' + s.FOOTER_TEXT;
-      }
-      // Update PDF title/venue for generatePhysicalPDF
+
+      window.currentSettings = s;
+
+      // Runtime values for PDF, WhatsApp, etc.
       window.dynamicPdfTitle = s.PDF_TITLE || '';
       window.dynamicPdfVenue = s.PDF_VENUE || '';
       window.dynamicEventName = s.EVENT_NAME || '';
@@ -920,18 +914,118 @@
       window.dynamicWhatsAppMsg = s.WHATSAPP_INVITE_MESSAGE || '';
       window.dynamicQuota = s.PARTICIPANT_QUOTA || '';
       window.dynamicVenue = s.EVENT_VENUE || '';
-      window.dynamicSchedule = s.SCHEDULE_JSON ? JSON.parse(s.SCHEDULE_JSON) : null;
+      window.dynamicSchedule = s.SCHEDULE_JSON ? safeJsonParse(s.SCHEDULE_JSON) : null;
       window.dynamicClosedMsg = s.CLOSED_MESSAGE || '';
       window.dynamicSuccessMsg = s.SUCCESS_MESSAGE || '';
-      
-      // Update schedule in success page if available
-      if (window.dynamicSchedule && window.dynamicEventName) updateSuccessSchedule();
+
+      const eventName = s.EVENT_NAME || s.EVENT_SHORT_NAME || '';
+      const eventShort = s.EVENT_SHORT_NAME || eventName;
+
+      // 1. Header title
+      setText('publicEventTitle', eventName || 'Seminar Attendance & Management System');
+      // 2. Header subtitle
+      setText('publicEventSubtitle', s.EVENT_DESCRIPTION || 'Aplikasi Pengurusan Kehadiran Peserta');
+      // 3. Countdown label
+      setText('publicCountdownLabel', (eventShort ? eventShort + ' Bermula Dalam:' : 'Acara Bermula Dalam:'));
+      // 4. Meta tags
+      if (eventName) {
+        document.title = eventName + ' — Attendance System';
+        setMeta('og:title', eventName);
+        setMeta('twitter:title', eventName);
+        setMetaName('title', eventName);
+      }
+      if (s.EVENT_DESCRIPTION) {
+        setMeta('og:description', s.EVENT_DESCRIPTION);
+        setMeta('twitter:description', s.EVENT_DESCRIPTION);
+        setMetaName('description', s.EVENT_DESCRIPTION);
+      }
+      // 5. Poster
+      if (s.POSTER_URL) {
+        const img = document.getElementById('publicPoster');
+        if (img) { img.src = s.POSTER_URL; img.alt = eventName || 'Event Poster'; }
+        setMeta('og:image', s.POSTER_URL);
+        setMeta('twitter:image', s.POSTER_URL);
+      }
+      // 6. Description
+      showIf('publicDescription', !!s.EVENT_DESCRIPTION);
+      setText('publicDescription', s.EVENT_DESCRIPTION || '');
+      // 7. Marketing copy
+      showIf('publicMarketingCopy', !!s.MARKETING_COPY);
+      setText('publicMarketingCopy', s.MARKETING_COPY || '');
+      // 8. Benefits
+      const benefits = s.BENEFITS_JSON ? safeJsonParse(s.BENEFITS_JSON) : [];
+      showIf('publicBenefits', benefits.length > 0);
+      if (benefits.length > 0) {
+        const bl = document.getElementById('publicBenefitsList');
+        if (bl) bl.innerHTML = benefits.map(b => `<li class="flex items-start gap-2"><span class="shrink-0">${escHtml(b.icon || '✅')}</span><span>${escHtml(b.text || '')}</span></li>`).join('');
+      }
+      // 9. Speaker info
+      showIf('publicSpeakerInfo', !!s.SPEAKER_INFO);
+      setText('publicSpeakerInfo', s.SPEAKER_INFO || '');
+      // 10. Registration CTA
+      const hasReg = !!s.REGISTRATION_URL && !!s.REGISTRATION_CTA_TEXT;
+      showIf('publicRegistration', hasReg);
+      if (hasReg) {
+        const btn = document.getElementById('publicRegistrationButton');
+        if (btn) { btn.textContent = s.REGISTRATION_CTA_TEXT; btn.href = s.REGISTRATION_URL; }
+      }
+      // 11. Quota
+      setText('publicQuotaLabel', s.PARTICIPANT_QUOTA ? 'Kuota Penuh ' + s.PARTICIPANT_QUOTA + '/' + s.PARTICIPANT_QUOTA : 'Kuota Penuh');
+      // 12. Branding colors
+      if (s.PRIMARY_COLOR || s.SECONDARY_COLOR) {
+        const p = s.PRIMARY_COLOR || '#d4a017';
+        const sc = s.SECONDARY_COLOR || '#f7d26a';
+        let style = document.getElementById('dynamic-brand-style');
+        if (!style) { style = document.createElement('style'); style.id = 'dynamic-brand-style'; document.head.appendChild(style); }
+        style.textContent = `.gold-gradient { background: linear-gradient(135deg, ${sc}, ${p}) !important; }`;
+      }
+      // 13. Schedule (success page)
+      const schedule = window.dynamicSchedule;
+      if (schedule && schedule.length > 0) {
+        setText('publicScheduleTitle', 'Aturcara ' + eventName);
+        const sl = document.getElementById('publicScheduleList');
+        if (sl) sl.innerHTML = schedule.map(item => 
+          `<div class="flex justify-between border-b pb-2 last:border-b-0"><span>${escHtml(item.title || '')}${item.description ? ' — ' + escHtml(item.description) : ''}</span><span>${escHtml(item.time || '')}</span></div>`
+        ).join('');
+      }
+      // 14. Footer
+      if (s.FOOTER_TEXT) {
+        const fo = document.querySelector('footer p:first-child');
+        if (fo) fo.innerHTML = '&copy; <span id="currentYear"></span> ' + escHtml(s.FOOTER_TEXT);
+        const yEl = document.getElementById('currentYear');
+        if (yEl) yEl.textContent = new Date().getFullYear();
+      } else if (s.ORGANISER_NAME) {
+        const fo = document.querySelector('footer p:first-child');
+        if (fo) fo.innerHTML = '&copy; <span id="currentYear"></span> ' + escHtml(s.ORGANISER_NAME);
+        const yEl = document.getElementById('currentYear');
+        if (yEl) yEl.textContent = new Date().getFullYear();
+      }
+      // 15. Success message
+      if (s.SUCCESS_MESSAGE) setText('publicSuccessMessage', s.SUCCESS_MESSAGE);
+      // 16. Closed message
+      if (s.CLOSED_MESSAGE) setText('publicClosedMessage', s.CLOSED_MESSAGE);
+      // 17. Photo section
+      if (eventName && s.EVENT_DATE && s.EVENT_VENUE) {
+        const dateStr = new Date(s.EVENT_DATE).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+        setHtml('publicPhotoLabel', '<b>Photo Album | ' + escHtml(eventName) + '<br>' + dateStr + ' | ' + escHtml(s.EVENT_VENUE) + '</b><br><i>Access PIN dalam WhatsApp Group</i>');
+        setText('publicPhotoButton', 'PHOTO ALBUM ' + eventShort);
+      }
     }
-    
-    function updateSuccessSchedule() {
-      const schedTitle = document.querySelector('#successPage h3');
-      if (schedTitle && window.dynamicEventName) schedTitle.textContent = 'Aturcara ' + window.dynamicEventName;
-      // Schedule items rendering uses existing logic in the public section
+
+    function setText(id, text) { const el = document.getElementById(id); if (el) el.textContent = text; }
+    function setHtml(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
+    function showIf(id, cond) { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !cond); }
+    function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function safeJsonParse(str) { try { return JSON.parse(str); } catch(e) { return null; } }
+    function setMeta(prop, content) {
+      let sel = 'meta[property="' + prop + '"]';
+      let el = document.querySelector(sel);
+      if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+      el.setAttribute('content', content);
+    }
+    function setMetaName(name, content) {
+      let el = document.querySelector('meta[name="' + name + '"]');
+      if (el) el.setAttribute('content', content);
     }
 
     window.onload = function() {
