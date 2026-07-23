@@ -939,7 +939,12 @@
 
       const settings = window.lastFetchedSettings || {};
       const dateStr = settings.EVENT_DATE ? new Date(settings.EVENT_DATE).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
-      const timeStr = settings.EVENT_TIME || '-';
+      const timeStr = settings.EVENT_START_TIME || settings.EVENT_TIME || '-';
+
+      const pdfTitle = window.dynamicPdfTitle || window.dynamicEventName || "Senarai Kehadiran Fizikal";
+      const pdfVenue = window.dynamicPdfVenue || window.dynamicVenue || "";
+
+      function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
       let printWindow = window.open('', '_blank');
       let tableRows = "";
@@ -966,11 +971,16 @@
         bil++;
       });
 
+      const subtitleParts = ['Senarai Pendaftaran & Kehadiran Fizikal Peserta'];
+      if (dateStr !== '-') subtitleParts.push('Tarikh: ' + dateStr);
+      if (timeStr !== '-') subtitleParts.push('Masa: ' + timeStr);
+      if (pdfVenue) subtitleParts.push('Tempat: ' + esc(pdfVenue));
+
       let htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Senarai Kehadiran Fizikal - BootCamp BOARDS</title>
+          <title>${esc(pdfTitle)}</title>
           <style>
             @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
             body { font-family: 'Inter', sans-serif; color: #0f172a; padding: 20px; background-color: #ffffff; }
@@ -988,8 +998,8 @@
         </head>
         <body>
           <div class="header">
-            <h1>BootCamp BOARDS: <br>Urus dan Follow Up Pelanggan Sistematik</h1>
-            <p>Senarai Pendaftaran & Kehadiran Fizikal Peserta • Tarikh: ${dateStr} • Masa: ${timeStr} • Tempat: Thinker Table, Bangi Gateway</p>
+            <h1>${esc(pdfTitle)}</h1>
+            <p>${subtitleParts.join(' • ')}</p>
           </div>
           <table>
             <thead>
