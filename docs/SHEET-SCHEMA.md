@@ -11,7 +11,7 @@
 
 ## Participant Headers (Form_Responses)
 
-The TEST GAS V1 uses **header-name-based column mapping**. Headers are normalised (trimmed, lowercased, spaces collapsed) before matching.
+The TEST GAS V1 uses **header-name-based column mapping**. Headers are normalised (trimmed, lowercased, spaces collapsed, punctuation stripped) before matching.
 
 ### Logical Fields and Accepted Aliases
 
@@ -20,7 +20,7 @@ The TEST GAS V1 uses **header-name-based column mapping**. Headers are normalise
 | **NAME** | `Nama`, `Nama Penuh`, `Name`, `Full Name` |
 | **PHONE** | `No Telefon`, `Nombor Telefon`, `Phone`, `Phone Number`, `No Tel`, `Telefon` |
 | **EMAIL** | `Email`, `Emel`, `E-mail`, `E Mail` |
-| **PG_CODE** | `PG Code`, `PGCode`, `PG Code`, `Agent Code`, `Agent ID`, `Kod PG` |
+| **PG_CODE** | `PG Code`, `PGCode`, `Agent Code`, `Agent ID`, `Kod PG` |
 | **WA_STATUS** | `WA Status`, `WhatsApp Status`, `Status WA`, `Status Whatsapp` |
 | **REPLACEMENT** | `Replacement`, `Gantian`, `Pengganti`, `Replacement Data`, `Data Gantian` |
 
@@ -34,17 +34,49 @@ The Form must produce these columns (in any order — header mapping handles it)
 4. Email (or accepted alias)
 5. PG Code (or accepted alias)
 
-Columns for WA_STATUS and REPLACEMENT are managed by GAS (initially empty).
+Columns for **WA_STATUS** and **REPLACEMENT** are managed by GAS (initially empty). EMAIL may be empty if the Google Form does not collect email — the column must still exist but values can be blank.
 
 ### Validation
 
 Run `validateSetup` (via Admin panel or direct POST) to check:
 - All 4 tabs exist
 - All 6 logical fields are found
-- No duplicate header matches
-- Settings sheet has ≥ 2 columns
+- Each field maps to exactly one source header (no duplicates)
+- Settings sheet has at least 2 columns
 
-Errors are shown in the System Validation panel on the Admin page.
+The System Validation panel shows:
+- **Green rows**: each recognised source header with logical field name and column position
+- **Red rows**: each missing logical field individually
+- **Tab icons**: ✅/❌ for each of the 4 required tabs
+
+### WA_STATUS Column
+
+| Value | Meaning |
+|-------|---------|
+| `BELUM` | Not yet contacted (default) |
+| `SUDAH` | WhatsApp invitation sent |
+| `ERROR` | Phone number invalid / no WhatsApp |
+
+Managed by `updateWAStatus` GAS action (admin only). Frontend renders as colour-coded dropdown.
+
+### REPLACEMENT Column
+
+Stores JSON string for replacement participant data:
+```json
+{
+  "nama": "Ali Bin Abu",
+  "phone": "0123456789",
+  "email": "ali@example.com",
+  "pgcode": "PG002",
+  "approved": true
+}
+```
+
+- `approved: true` — replacement accepted, new participant active
+- `approved: false` — replacement rejected
+- No value — no replacement record
+
+Managed by `submitReplacementPublic` (public) and `handleApproval` (admin).
 
 ## Settings Tab Structure
 
@@ -56,7 +88,7 @@ Simple key-value in columns A and B:
 | `EVENT_DATE` | `2026-07-25` |
 | ... | ... |
 
-GAS reads ALL populated rows. Empty keys are skipped. New keys are appended.
+GAS reads ALL populated rows. Empty keys are skipped on read. New keys are appended on save. Existing keys are updated in-place. 29 canonical keys supported. Unknown or non-whitelisted keys are rejected on save.
 
 ## Kehadiran Tab
 
@@ -64,12 +96,14 @@ Auto-populated by GAS when participant confirms attendance:
 
 | Col | Field |
 |:---:|-------|
-| A | Timestamp |
+| A | Timestamp (yyyy-MM-dd HH:mm:ss, Asia/KL) |
 | B | Nama |
 | C | Phone |
 | D | Email |
 | E | PG Code |
 | F | Status (`HADIR`) |
+
+Duplicate attendance is prevented — checks existing rows by PG Code and phone number.
 
 ## Wishlist Tab
 
@@ -77,7 +111,7 @@ Auto-populated by GAS from public wishlist form:
 
 | Col | Field |
 |:---:|-------|
-| A | Timestamp |
+| A | Timestamp (yyyy-MM-dd HH:mm:ss, Asia/KL) |
 | B | Nama |
 | C | Phone |
 | D | Email |

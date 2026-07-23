@@ -1,101 +1,165 @@
-# SESSION HANDOVER — 22 July 2026
+# SESSION HANDOVER — 23 July 2026
 
 ## Session Objective
 
-Upgrade PG Hadir Attendance application from single hard-coded event to SuperAdmin-configurable system.
+Complete SuperAdmin V1 dynamic public rendering, dynamic WhatsApp/PDF, Sheet contract fixes, and prepare for Owner UAT.
 
 ## Work Completed
 
-1. **Audit** — Identified 54 event-specific hard-coded values in `index.html`
-2. **GAS Backend Audit** — Analyzed 349-line production `code.gs`; documented all actions, sheet tabs, and participant columns
-3. **TEST GAS V1** — Built `gas/code.test.gs` (977 lines) with:
-   - ScriptProperties-based spreadsheet config
-   - Header-based column mapping
-   - Token authentication (CacheService, 6hr TTL)
-   - Dynamic settings read/write with whitelist validation
-   - Protected admin write actions
-4. **Frontend Fix** — Extracted inline JavaScript to `app.js` (668 lines); resolved browser `</script>` parsing issue
-5. **Token Integration** — Updated all admin write actions to send token from `adminLogin`
-6. **SuperAdmin UI** — Built 7-tab settings panel in Admin page with Benefits and Schedule editors
-7. **Dynamic Rendering** — Added `applyPublicSettings()` for branding, poster, footer
+### Google Sheet Contract Fix
+- Identified missing `Form_Responses` headers: EMAIL, WA STATUS, REPLACEMENT
+- Owner added columns manually; validation now passes
+- All 4 tabs confirmed: Form_Responses, Kehadiran, Settings, Wishlist
+- Participant dashboard synchronisation confirmed
 
-## Files Changed
+### TEST GAS Fixes
+- `SCHEDULE_JSON` added to `APPROVED_SETTINGS_KEYS` whitelist (was rejected on save)
+- Canonical key count: 28 → 29
+- `analyzeHeaders()` function added for detailed per-header validation reporting
+- `validateSetup()` enhanced with per-field found/missing/duplicate reporting
+- Frontend `validateSetupSilent()` renders green found rows and red missing rows
 
-| File | Lines | Status |
-|------|:-----:|--------|
-| `index.html` | 332 | Modified (JS extracted, SuperAdmin UI added) |
-| `app.js` | 1031 | **NEW** (all JavaScript) |
-| `gas/code.gs` | 349 | Added (production reference, sanitized) |
-| `gas/code.test.gs` | 977 | **NEW** (TEST GAS V1) |
-| `photo.html` | 2389 | Unchanged |
-| `boards.jpeg` | — | Unchanged |
+### Dynamic PDF Title and Venue
+- `generatePhysicalPDF()` now uses `PDF_TITLE` from SuperAdmin settings
+- Fallback: `EVENT_NAME` → `"Senarai Kehadiran Fizikal"`
+- Venue uses `PDF_VENUE` → `EVENT_VENUE` → omitted if empty
+- Time uses `EVENT_START_TIME || EVENT_TIME`
+- All dynamic text HTML-escaped before injection
+- Removed hard-coded "BootCamp BOARDS", "Urus dan Follow Up Pelanggan Sistematik", "Thinker Table, Bangi Gateway"
 
-## Commit History
+### Dynamic WhatsApp
+- Public WA button uses `WHATSAPP_GROUP_LINK` from SuperAdmin; hidden if empty
+- Wishlist WA invite uses `buildWhatsAppMessage()` with template placeholders
+- Bulk invite uses `getWhatsAppLink()` with empty-link guard
+- Template placeholders: `{nama}`, `{event}`, `{link}`
+- Fallback message when template empty; error when link empty
+- Removed hard-coded `chat.whatsapp.com/IDHqogXTdvkCdd3XvTOg5e` and "BootCamp BOARDS" text
+- SuperAdmin Comms tab label updated to show all 3 placeholders
+
+### Complete Dynamic Public Rendering
+- All 17 element groups rendered from settings: title, subtitle, countdown, poster, description, marketing copy, benefits, speaker, registration CTA, quota, branding, schedule, footer, success message, closed message, meta tags, photo section
+- All fragile selectors replaced with stable element IDs (`publicEventTitle`, `publicPoster`, etc.)
+- Canonical settings state: `window.currentSettings` updated on every load/save
+- Save All immediately applies to public page, then confirms persistence via reload
+- Countdown uses `EVENT_START_TIME || EVENT_TIME`
+- Removed all BootCamp, BOARDS, Thinker Table, Bangi Gateway, 13 Jun 2026, boards.jpeg references
+- Fixed duplicate `id="search-tab"` bug on photo section
+- Photo section stays unchanged (photo.html link preserved)
+
+### Documentation
+- README, CHANGELOG, SESSION-HANDOVER, SUPERADMIN-V1, GAS-TEST-SETUP, SHEET-SCHEMA, TESTING, NEXT-SESSION-PLAN updated
+- UAT-CHECKLIST.md and RELEASE-READINESS.md created
+
+## Important Decisions
+
+1. **Photo.html deferred** — not modified in V1; remains BootCamp-era photo gallery
+2. **Cloudflare production branch** — must be set to `main` (Owner action)
+3. **Production GAS** — `code.gs` unchanged; only `code.test.gs` modified
+4. **Sheet contract** — header-based mapping, Owner adds columns manually
+5. **Minimal fixes** — each commit addresses one specific concern
+
+## Latest Commit
 
 ```
-c0fb907 feat: add superadmin event settings and sheet validation
-b20b470 fix: align frontend with TEST GAS V1 contract
-774c1ed test: connect attendance frontend to test GAS deployment
-36584a2 debug: add temp response diagnostics for TEST GAS adminLogin
-c648628 security: sanitize production spreadsheet ID from code.gs
-b1401cb fix: extract attendance javascript and restore browser execution
-a6983ee feat: add configurable test GAS backend with admin authentication
-5861b6d chore: capture current working attendance application
+9a2f863 fix: complete dynamic public event rendering
 ```
 
-## GitHub
+## Commit History (This Session)
 
-- **Branch:** `event-update/new-event`
-- **Pushed:** ✅
-- **Merged to main:** ❌ No
-- **Remote:** `https://github.com/zahidihalim/pg-hadir.git`
+```
+9a2f863 fix: complete dynamic public event rendering
+b8178a1 fix: use superadmin WhatsApp settings for invitations
+e235a56 fix: use dynamic event settings in attendance PDF
+fbb42a5 fix: improve sheet validation and allow schedule settings
+```
 
-## TEST GAS Status
+## Branch
 
-| Item | Status |
-|------|:------:|
-| Deployed | ✅ (by Owner) |
-| Authorization | ✅ |
-| `getConfig` | ⏳ Requires testing |
-| `adminLogin` | ⏳ Requires testing |
-| `validateSetup` | ⏳ Requires Owner verification |
-| `saveSettings` | ⏳ Requires testing |
+```
+event-update/new-event  (pushed, NOT merged to main)
+```
+
+## Files Changed During Implementation
+
+| File | Changes |
+|:---|:---|
+| `app.js` | Dynamic public rendering, dynamic PDF, dynamic WhatsApp, canonical state, loading behavior |
+| `index.html` | Stable DOM IDs, new content sections, BootCamp text removal, photo section fix |
+| `gas/code.test.gs` | SCHEDULE_JSON whitelist, analyzeHeaders(), enhanced validateSetup() |
+| `docs/*.md` | 10 documentation files updated/created |
 
 ## Production Status
 
 | Component | Status |
 |-----------|:------:|
-| Production GAS | ✅ Unchanged (BootCamp) |
+| Production GAS (`code.gs`) | ✅ Unchanged (BootCamp event) |
 | Production Sheet | ✅ Unchanged |
 | Production `index.html` | ✅ Unchanged |
-| Cloudflare | ❌ Not deployed |
+| Cloudflare | ✅ Not deployed |
+| `main` branch | ✅ Unchanged |
 | Photo page | ✅ Unchanged |
 
-## Known Issues
+## TEST GAS Status
 
-1. `validateSetup` not yet confirmed by Owner
-2. Participant dashboard synchronisation not yet proven against Zakat Emas Sheet
-3. Header title rendering only partially dynamic
-4. Temporary diagnostic logs may still exist in `app.js`
-5. Full regression testing incomplete
-6. Photo integration remains deferred
+| Item | Status |
+|------|:------:|
+| `code.test.gs` | ✅ Updated (1085 lines, 29 canonical keys) |
+| Deployed by Owner | ⏳ Needs redeployment with latest code |
+| `getConfig` | ✅ Works |
+| `dashboard` | ⏳ Pending Sheet column verification |
+| `validateSetup` | ⏳ Pending Owner UAT |
+| `saveSettings` | ⏳ Pending Owner UAT |
+| `adminLogin` | ⏳ Pending Owner UAT |
 
-## Pending Owner Actions
+## Google Sheet Status
 
-- Verify System Validation panel after admin login
-- Confirm all required Sheet tabs exist
-- Fix Sheet structure if needed (tab names, headers)
-- Test `getConfig` directly via browser
-- Test `adminLogin` and token return
-- Test `saveSettings` persistence
-- Load and save event details via SuperAdmin UI
+| Tab | Status |
+|-----|:------:|
+| `Form_Responses` | ✅ Exists (Owner added EMAIL, WA STATUS, REPLACEMENT columns) |
+| `Kehadiran` | ✅ Exists |
+| `Settings` | ✅ Exists (29 keys configured) |
+| `Wishlist` | ✅ Exists |
 
-## Exact Restart Point
+## Cloudflare Status
+
+| Item | Status |
+|------|:------:|
+| Local config files | None |
+| Production branch | Must be set to `main` in Cloudflare Pages Dashboard |
+| `event-update/new-event` deploy | Not intended for production |
+| Next deployment | After UAT + main merge |
+
+## Owner UAT Responsibilities
+
+1. Redeploy TEST GAS with updated `code.test.gs` content
+2. Confirm all 4 Sheet tabs exist and headers map correctly
+3. Run full UAT checklist from `docs/UAT-CHECKLIST.md` (47 test cases)
+4. Record pass/fail for each test
+5. Capture screenshots of public page, Admin page, and PDF
+6. Report any defects — only blocking issues to be fixed before release
+7. Confirm Cloudflare production branch is set to `main`
+
+## Exact Restart Point After UAT
 
 ```
-1. Open index.html in browser
-2. Login to Admin page
-3. Check System Validation panel
-4. Fix any Sheet validation errors shown
-5. Continue with NEXT-SESSION-PLAN.md Priority 1
+1. Review Owner UAT results
+2. Fix only confirmed defects in event-update/new-event
+3. Retest affected functions
+4. Run regression tests
+5. Update documentation with UAT results
+6. Prepare Pull Request for main merge
+7. CTO review
+8. Owner approval
+9. Merge to main
+10. Deploy Cloudflare manually
+11. Purge Cloudflare cache
+12. Run production smoke tests
 ```
+
+## Photo.html — Deferred
+
+- Not modified in any V1 commit
+- Remains the BootCamp-era photo gallery
+- Photo album link on public page preserved (`photo.html`)
+- Photo section text now dynamically uses current event name/date/venue
+- Full photo integration deferred to future phase

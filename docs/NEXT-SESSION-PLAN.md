@@ -1,84 +1,59 @@
 # NEXT SESSION PLAN
 
-Start: Google Sheet Validation → Participant Synchronisation
+Start after: Owner completes UAT and reports results.
 
 ---
 
-## Priority 1 — Validate Google Sheet Connection
+## Priority 1 — Owner UAT
 
-- [ ] 1. Login to Admin page
-- [ ] 2. Review System Validation panel
-- [ ] 3. Confirm all required Sheet tabs exist
-- [ ] 4. Confirm participant headers map correctly
-- [ ] 5. Fix Sheet structure manually if required
-- [ ] 6. Re-run validation
-- [ ] 7. Confirm dashboard returns real participant totals
-- [ ] 8. Confirm participant list matches Zakat Emas Sheet
-- [ ] 9. Confirm Wishlist and Kehadiran tabs load correctly
+- [ ] 1. Run full TEST checklist (47 tests from `docs/TESTING.md`)
+- [ ] 2. Record pass/fail for each test
+- [ ] 3. Capture screenshots of public page, Admin page, PDF output
+- [ ] 4. Record any defects with exact steps to reproduce
+- [ ] 5. Do not request new features during UAT unless blocking
 
-## Priority 2 — Verify SuperAdmin Settings
+## Priority 2 — Defect Resolution
 
-- [ ] 10. Load existing settings (Reload button)
-- [ ] 11. Enter Zakat Emas event details
-- [ ] 12. Save all settings
-- [ ] 13. Refresh and confirm persistence
-- [ ] 14. Verify event name, date, venue and quota
-- [ ] 15. Verify poster and branding
-- [ ] 16. Verify Benefits editor
-- [ ] 17. Verify Schedule editor
-- [ ] 18. Verify WhatsApp settings
-- [ ] 19. Verify PDF title and venue
-- [ ] 20. Verify attendance toggles
+- [ ] 6. Fix only confirmed defects in `event-update/new-event`
+- [ ] 7. Retest affected function (browser verification)
+- [ ] 8. Run regression tests on unchanged functionality
+- [ ] 9. Update documentation with defect resolution notes
+- [ ] 10. Commit small targeted fixes
 
-## Priority 3 — Verify Public Rendering
+## Priority 3 — Release Review
 
-- [ ] 21. Confirm no BootCamp content remains after config loads
-- [ ] 22. Confirm header updates correctly
-- [ ] 23. Confirm poster updates correctly
-- [ ] 24. Confirm countdown uses correct date/time
-- [ ] 25. Confirm venue and quota display correctly
-- [ ] 26. Confirm registration CTA and link
-- [ ] 27. Confirm marketing copy and benefits
-- [ ] 28. Confirm success message
-- [ ] 29. Confirm footer
-- [ ] 30. Confirm mobile layout
+- [ ] 11. Review full branch diff against main
+- [ ] 12. Run secret scan (no credentials, Sheet IDs, API keys exposed)
+- [ ] 13. Confirm no TEST-only diagnostic logs remain
+- [ ] 14. Confirm TEST GAS URL strategy (swap to production before release?)
+- [ ] 15. Confirm Cloudflare production branch is set to `main`
+- [ ] 16. Confirm rollback plan: production files + GAS revert path
+- [ ] 17. Prepare Pull Request with UAT results summary
+- [ ] 18. CTO review
+- [ ] 19. Owner approval
 
-## Priority 4 — Regression Testing
+## Priority 4 — Release
 
-- [ ] 31. Participant search
-- [ ] 32. Attendance confirmation
-- [ ] 33. Duplicate attendance
-- [ ] 34. Wishlist submission
-- [ ] 35. Public replacement
-- [ ] 36. Admin WA status update
-- [ ] 37. Admin replacement approval
-- [ ] 38. PDF generation
-- [ ] 39. Logout and token invalidation
-- [ ] 40. Session expiry handling
-- [ ] 41. Zero Console errors
-- [ ] 42. No broken network requests
+- [ ] 20. Merge `event-update/new-event` into `main`
+- [ ] 21. Deploy Cloudflare Pages from `main` branch
+- [ ] 22. Purge Cloudflare cache
+- [ ] 23. Run production smoke tests (public page loads, search works, login works)
+- [ ] 24. Verify public page renders with SuperAdmin settings
+- [ ] 25. Verify Admin dashboard with real participant data
+- [ ] 26. Verify participant search returns real results
+- [ ] 27. Verify attendance confirmation records correctly
+- [ ] 28. Verify PDF generation with dynamic title/venue
+- [ ] 29. Verify WhatsApp invites use dynamic link and message
+- [ ] 30. Monitor after release (check logs, user reports)
 
-## Priority 5 — Code Review and Cleanup
+## Priority 5 — Future Work (Deferred)
 
-- [ ] 43. Review partial header-title selector
-- [ ] 44. Remove temporary diagnostics
-- [ ] 45. Confirm no production GAS URL remains active in TEST branch
-- [ ] 46. Review remaining hard-coded BootCamp strings
-- [ ] 47. Review public dashboard exposure
-- [ ] 48. Review rate-limit risks
-- [ ] 49. Review `app.js` structure and comments
-- [ ] 50. Confirm documentation matches implementation
-
-## Priority 6 — Release Preparation
-
-- [ ] 51. Produce final UAT report
-- [ ] 52. Decide whether to open Pull Request
-- [ ] 53. Review branch diff against main
-- [ ] 54. Confirm secrets scan
-- [ ] 55. Confirm rollback plan
-- [ ] 56. Merge only after CTO and Owner approval
-- [ ] 57. Push main
-- [ ] 58. Manually deploy Cloudflare
-- [ ] 59. Purge Cloudflare cache
-- [ ] 60. Run production smoke tests
-- [ ] 61. Keep previous version available for rollback
+- [ ] 31. Photo integration — gallery linked to new event photos
+- [ ] 32. Multi-event support — archive/reuse settings per event
+- [ ] 33. Role-based admin — read-only vs full-access roles
+- [ ] 34. Audit logs — record who changed what and when
+- [ ] 35. Rate limiting — protect public endpoints from abuse
+- [ ] 36. Security hardening — additional token checks, CSP headers
+- [ ] 37. Automated testing — browser test suite for UAT automation
+- [ ] 38. Dark mode support
+- [ ] 39. Offline caching (Service Worker)
