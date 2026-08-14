@@ -5,6 +5,7 @@ desktop.ini
 
 # Backup files
 *.backup-*
+backups/
 
 # Editor files
 *.swp

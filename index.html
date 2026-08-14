@@ -30,15 +30,451 @@
     body { font-family: 'Poppins', sans-serif; background: #f8fafc; }
     .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
     .gold-gradient { background: linear-gradient(135deg, #f7d26a, #d4a017); }
+
+    /* ===== FRONT PAGE DARK THEME ===== */
+    .front-page-bg { background: #0b0b0d; color: #e2e8f0; }
+    .landing-container {
+      width: min(100% - 32px, 1200px);
+      margin-inline: auto;
+    }
+    .landing-section {
+      padding-block: clamp(32px, 6vw, 72px);
+      text-align: center;
+    }
+
+    /* Section titles */
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      color: #d4a017;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .section-title {
+      font-size: clamp(1.7rem, 3vw, 2.35rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+      letter-spacing: 0;
+    }
+    .section-subtitle {
+      font-size: 1rem;
+      color: #cbd5e1;
+      max-width: 680px;
+      line-height: 1.6;
+      margin-inline: auto;
+    }
+
+    .event-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: clamp(18px, 3vw, 28px);
+      padding-block: 8px;
+    }
+    .event-row::-webkit-scrollbar { display: none; }
+
+    /* Event card */
+    .event-card {
+      width: min(100%, 360px);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #141416;
+      border: 1px solid #1e1e22;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      cursor: default;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+    .event-row-single .event-card {
+      width: min(100%, 440px);
+    }
+    @media (min-width: 768px) {
+      .event-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.55);
+        border-color: #2a2a30;
+      }
+    }
+    .event-card:focus-within {
+      outline: 2px solid #d4a017;
+      outline-offset: 3px;
+      border-radius: 10px;
+    }
+
+    /* Event card poster — full width, maintain aspect ratio */
+    .event-card-img-wrap {
+      position: relative;
+      width: 100%;
+      background: #0d0d10;
+      aspect-ratio: 4 / 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .event-card-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0d0d10;
+    }
+
+    /* Gradient overlay on poster for readability */
+    .event-card-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(transparent, rgba(11,11,13,0.9));
+      pointer-events: none;
+    }
+
+    /* Card info area */
+    .event-card-body {
+      padding: 18px 20px 22px;
+      flex: 1;
+    }
+    .event-card-date {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+    .event-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      margin: 8px 0 7px;
+      line-height: 1.25;
+    }
+    .event-card-location {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+    .image-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 24px;
+      color: #e2e8f0;
+      background: radial-gradient(circle at top, rgba(212,160,23,0.22), transparent 42%), #111114;
+      text-align: center;
+    }
+    .image-fallback strong {
+      font-size: 1rem;
+      color: #fff;
+    }
+    .image-fallback span {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+    .image-fallback.hidden { display: none; }
+
+    /* Badge styles */
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .badge-upcoming { background: #d4a017; color: #0b0b0d; }
+    .badge-past { background: #1e1e25; color: #64748b; }
+
+    /* Hero section */
+    .hero-accent {
+      width: 56px; height: 3px;
+      background: #d4a017;
+      border-radius: 2px;
+      margin-inline: auto;
+    }
+    .landing-hero {
+      min-height: clamp(280px, 42vw, 460px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-block: clamp(48px, 8vw, 96px);
+    }
+
+    /* AJK poster */
+    .ajk-poster {
+      width: 100%;
+      max-width: 900px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.25s ease;
+      background: #0d0d10;
+    }
+    .ajk-frame {
+      position: relative;
+      width: min(100%, 900px);
+      min-height: clamp(260px, 38vw, 520px);
+      margin-inline: auto;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0d0d10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (min-width: 768px) {
+      .ajk-poster:hover { transform: scale(1.02); }
+    }
+
+    /* Modal for AJK poster */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+    .modal-content img {
+      max-width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .modal-close {
+      position: absolute;
+      top: -40px; right: 0;
+      background: none; border: none;
+      color: #fff; font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      opacity: 0.8;
+    }
+    .modal-close:hover { opacity: 1; }
+
+    /* CTA button */
+    .btn-gold {
+      display: inline-block;
+      background: linear-gradient(135deg, #f7d26a, #d4a017);
+      color: #0b0b0d;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 36px;
+      border-radius: 40px;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* Back to home button in attendance mode */
+    .btn-back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-back-home:hover { background: rgba(255,255,255,0.08); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .event-card, .ajk-poster, .btn-gold, .event-card-img { transition: none !important; }
+      .event-card:hover { transform: none !important; }
+      .ajk-poster:hover { transform: none !important; }
+    }
   </style>
 </head>
 
 <body class="min-h-screen text-slate-800">
 
+  <!-- ==================== FRONT PAGE ==================== -->
+  <section id="frontPage" class="page-section front-page-bg min-h-screen">
+
+    <nav class="landing-container py-5 flex items-center justify-center">
+      <span class="text-lg font-bold tracking-tight text-white">PG1M <span class="text-yellow-500">Bangi</span></span>
+    </nav>
+
+    <!-- Hero -->
+    <section class="landing-container landing-hero">
+      <div class="hero-accent mb-5"></div>
+      <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-5">PG1M Bangi</h1>
+      <p class="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed mx-auto">Kenali pasukan di belakang tabir dan aktiviti kami.</p>
+    </section>
+
+    <!-- AJK Section -->
+    <section class="landing-container landing-section">
+      <span class="section-label">Pasukan Kami</span>
+      <h2 class="section-title">Kenali AJK Kami</h2>
+      <p class="section-subtitle mb-8">Pasukan di belakang tabir yang merancang dan menggerakkan aktiviti PG1M.</p>
+
+      <div class="ajk-frame">
+        <img
+          id="ajkPoster"
+          src="assets/ajk-pg1m-2026-2027.png"
+          alt="Carta Organisasi AJK PG1M Bangi 2026-2027"
+          class="ajk-poster"
+          onclick="openAjkModal()"
+          onkeydown="if(event.key==='Enter'||event.key===' ')openAjkModal()"
+          tabindex="0"
+          role="button"
+          aria-label="Klik untuk besarkan carta organisasi AJK"
+          onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
+        >
+        <div class="image-fallback hidden" aria-hidden="true">
+          <strong>Carta Organisasi AJK PG1M Bangi</strong>
+          <span>Imej asal belum tersedia dalam folder assets.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- AJK Modal -->
+    <div id="ajkModal" class="modal-backdrop hidden" onclick="closeAjkModal(event)" role="dialog" aria-modal="true" aria-label="Paparan besar carta organisasi AJK">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeAjkModal()" aria-label="Tutup">&times;</button>
+        <img id="ajkModalImg" src="assets/ajk-pg1m-2026-2027.png" alt="Carta Organisasi AJK PG1M Bangi 2026-2027" onerror="this.classList.add('hidden');">
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <section class="landing-container landing-section">
+      <span class="section-label">Akan Datang</span>
+      <h2 class="section-title mb-6">Event Akan Datang</h2>
+
+      <div class="event-row event-row-single">
+        <article class="event-card" tabindex="0" aria-label="Berani Buat Video PG1M Bangi — 15 Ogos 2026, Akan Datang">
+          <div class="event-card-img-wrap">
+            <img
+              src="assets/520b8e0e-4a49-48ef-84cb-19f724ada84a.jpg"
+              alt="Poster Berani Buat Video PG1M Bangi"
+              class="event-card-img"
+              loading="lazy"
+            >
+            <div class="event-card-overlay"></div>
+          </div>
+          <div class="event-card-body">
+            <span class="badge badge-upcoming">Akan Datang</span>
+            <h3 class="event-card-title">Berani Buat Video PG1M Bangi</h3>
+            <p class="event-card-date">15 Ogos 2026 &middot; 9.00 pagi&ndash;1.00 petang</p>
+            <p class="event-card-location">PG1M Skill &amp; Development Centre, Menara Public Gold, Kuala Lumpur</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Past Events -->
+    <section class="landing-container landing-section">
+      <span class="section-label">Telah Berlangsung</span>
+      <h2 class="section-title mb-6">Event Terdahulu</h2>
+
+      <div class="event-row">
+        <article class="event-card" tabindex="0" aria-label="Seminar Zakat Emas — 25 Julai 2026, Telah Berlangsung">
+          <div class="event-card-img-wrap">
+            <img
+              src="assets/event-zakat-emas-2026-07-25.png"
+              alt="Poster Seminar Zakat Emas PG1M Bangi"
+              class="event-card-img"
+              loading="lazy"
+              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
+            >
+            <div class="image-fallback hidden" aria-hidden="true">
+              <strong>Seminar Zakat Emas</strong>
+              <span>Poster event terdahulu belum tersedia dalam folder assets.</span>
+            </div>
+            <div class="event-card-overlay"></div>
+          </div>
+          <div class="event-card-body">
+            <span class="badge badge-past">Telah Berlangsung</span>
+            <h3 class="event-card-title">Seminar Zakat Emas</h3>
+            <p class="event-card-date">25 Julai 2026 &middot; 10.00 malam&ndash;12.00 tengah hari</p>
+            <p class="event-card-location">Public Gold Branch Bangi</p>
+          </div>
+        </article>
+
+        <article class="event-card" tabindex="0" aria-label="Bootcamp Boards — 13 Jun 2026, Telah Berlangsung">
+          <div class="event-card-img-wrap">
+            <img
+              src="assets/event-bootcamp-boards-2026-06-13.png"
+              alt="Poster Bootcamp Boards PG1M Bangi"
+              class="event-card-img"
+              loading="lazy"
+              onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"
+            >
+            <div class="image-fallback hidden" aria-hidden="true">
+              <strong>Bootcamp: Boards</strong>
+              <span>Poster event terdahulu belum tersedia dalam folder assets.</span>
+            </div>
+            <div class="event-card-overlay"></div>
+          </div>
+          <div class="event-card-body">
+            <span class="badge badge-past">Telah Berlangsung</span>
+            <h3 class="event-card-title">Bootcamp: Boards</h3>
+            <p class="event-card-date">13 Jun 2026 &middot; 10.00 pagi&ndash;12.00 tengah hari</p>
+            <p class="event-card-location">Thinker Table, Bangi Gateway</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA to Attendance -->
+    <section class="landing-container py-8 md:py-10 text-center">
+      <p class="text-slate-400 text-sm mb-5">Peserta event PG1M Bangi yang telah berdaftar?</p>
+      <button onclick="goToAttendance()" class="btn-gold">Semak Kehadiran</button>
+    </section>
+
+    <!-- Front Page Footer -->
+    <footer class="border-t border-white/5 py-8 mt-6 text-center">
+      <p class="text-sm font-bold text-white mb-1">PG1M Bangi</p>
+      <p class="text-xs text-slate-500">Memimpin, Merancang, Menggerakkan &amp; Membina Legasi.</p>
+      <p class="text-xs text-slate-600 mt-4">
+        designed by <a href="https://ai4i.my" target="_blank" class="font-bold text-yellow-600 hover:text-yellow-500 transition">ai4i.my</a>
+        <span class="mx-2 opacity-40">|</span>
+        <button type="button" onclick="showAdminLogin()" class="font-bold text-slate-500 hover:text-white transition underline decoration-dotted underline-offset-4 cursor-pointer">Admin Login</button>
+      </p>
+    </footer>
+
+  </section>
+  <!-- ==================== END FRONT PAGE ==================== -->
+
+  <!-- ==================== ATTENDANCE SYSTEM ==================== -->
+  <div id="attendanceMode" class="hidden">
+
   <div class="gold-gradient p-5 shadow-lg">
-    <div class="max-w-6xl mx-auto text-center">
-      <h1 id="publicEventTitle" class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 mb-1">Seminar Attendance &amp; Management System</h1>
-      <p id="publicEventSubtitle" class="text-sm md:text-base text-slate-800 font-medium">Aplikasi Pengurusan Kehadiran Peserta</p>
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex-1 text-center md:text-left">
+        <h1 id="publicEventTitle" class="text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-1">Seminar Attendance &amp; Management System</h1>
+        <p id="publicEventSubtitle" class="text-sm md:text-base text-slate-200 font-medium">Aplikasi Pengurusan Kehadiran Peserta</p>
+      </div>
+      <button onclick="goToFrontPage()" class="btn-back-home ml-4 shrink-0">&#8592; Laman Utama</button>
     </div>
   </div>
 
@@ -218,9 +654,13 @@
     <div id="sysValidationPanel" class="bg-white rounded-3xl shadow-md p-6 mb-6 border border-slate-100 hidden">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-bold text-slate-900">🔍 System Validation</h3>
-        <span id="sysValBadge" class="px-3 py-1 rounded-full text-xs font-bold">Checking...</span>
+        <div class="flex items-center gap-2 flex-wrap justify-end">
+          <button onclick="migrateSheetSchema()" class="text-xs bg-slate-900 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg font-bold transition">Sediakan Struktur Sheet</button>
+          <span id="sysValBadge" class="px-3 py-1 rounded-full text-xs font-bold">Checking...</span>
+        </div>
       </div>
       <div id="sysValSheets" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-xs"></div>
+      <div id="sysValChecks" class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4 text-xs"></div>
       <div id="sysValColumns" class="text-xs text-slate-600 mb-2"></div>
       <div id="sysValErrors" class="text-xs text-red-600"></div>
     </div>
@@ -330,6 +770,7 @@
       </div>
     </div>
 
+    <div id="dashboardError" class="hidden mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700"></div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
       <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 border-t-4 border-blue-500">
         <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Peserta Berdaftar</p>
@@ -425,6 +866,9 @@
       </p>
     </div>
   </footer>
+
+  </div>
+  <!-- ==================== END ATTENDANCE SYSTEM ==================== -->
   
   <script src="app.js" defer></script>
 </body>
